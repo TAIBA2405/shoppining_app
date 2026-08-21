@@ -44,7 +44,7 @@ export default function CartPage() {
     <div className="page" id="cart-page">
       <div className="container" style={{ paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-16)' }}>
         <h1 className="page-title" style={{ marginBottom: 'var(--space-6)' }}>Shopping Cart ({itemCount} items)</h1>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 'var(--space-8)', alignItems: 'start' }}>
+        <div className="cart-layout">
           {/* Cart Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             <AnimatePresence>
@@ -55,12 +55,12 @@ export default function CartPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  style={{ display: 'flex', gap: 'var(--space-4)', padding: 'var(--space-4)', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)' }}
+                  className="cart-item"
                 >
                   <Link to={`/product/${item.id}`}>
-                    <img src={item.image} alt={item.name} style={{ width: 100, height: 125, objectFit: 'cover', borderRadius: 'var(--radius-md)' }} />
+                    <img src={item.image} alt={item.name} className="cart-item-image" />
                   </Link>
-                  <div style={{ flex: 1 }}>
+                  <div className="cart-item-details">
                     <Link to={`/product/${item.id}`} style={{ textDecoration: 'none' }}>
                       <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600, marginBottom: 'var(--space-1)' }}>{item.name}</h3>
                     </Link>
@@ -71,7 +71,7 @@ export default function CartPage() {
                       <span style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>{formatPrice(item.price)}</span>
                       {item.originalPrice > item.price && <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)', textDecoration: 'line-through' }}>{formatPrice(item.originalPrice)}</span>}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="cart-item-actions">
                       <div className="quantity-selector" style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
                         <button onClick={() => updateQuantity(i, item.quantity - 1)} style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-tertiary)', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}><Minus size={14} /></button>
                         <span style={{ width: 36, textAlign: 'center', fontSize: 'var(--text-sm)', fontWeight: 600 }}>{item.quantity}</span>
@@ -88,7 +88,7 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', position: 'sticky', top: 'calc(var(--navbar-height) + var(--space-4))' }}>
+          <div className="cart-summary">
             <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-5)' }}>Order Summary</h3>
 
             {/* Coupon */}

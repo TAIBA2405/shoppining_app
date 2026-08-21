@@ -60,26 +60,24 @@ export default function CheckoutPage() {
         <h1 className="page-title" style={{ marginBottom: 'var(--space-6)', textAlign: 'center' }}>Checkout</h1>
 
         {/* Step Indicator */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-8)' }}>
+        <div className="checkout-step-indicator">
           {steps.map((s, i) => (
-            <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            <div key={s.num} className="checkout-step-item">
+              <div className="checkout-step-dot" style={{
                 background: step >= s.num ? 'var(--color-primary)' : 'var(--bg-tertiary)',
                 color: step >= s.num ? 'var(--text-inverse)' : 'var(--text-tertiary)',
-                fontWeight: 700, fontSize: 'var(--text-sm)'
               }}>
                 {s.num}
               </div>
-              <span style={{ fontSize: 'var(--text-sm)', color: step >= s.num ? 'var(--text-primary)' : 'var(--text-tertiary)', fontWeight: step === s.num ? 600 : 400 }}>
+              <span className="checkout-step-label" style={{ color: step >= s.num ? 'var(--text-primary)' : 'var(--text-tertiary)', fontWeight: step === s.num ? 600 : 400 }}>
                 {s.label}
               </span>
-              {i < steps.length - 1 && <div style={{ width: 40, height: 2, background: step > s.num ? 'var(--color-primary)' : 'var(--border-color)', margin: '0 var(--space-2)' }} />}
+              {i < steps.length - 1 && <div className="checkout-step-line" style={{ background: step > s.num ? 'var(--color-primary)' : 'var(--border-color)' }} />}
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 'var(--space-8)', alignItems: 'start' }}>
+        <div className="checkout-layout">
           {/* Form */}
           <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
             {step === 1 && (
@@ -88,20 +86,20 @@ export default function CheckoutPage() {
                   <MapPin size={18} style={{ verticalAlign: 'middle', marginRight: 8, color: 'var(--color-primary)' }} />
                   Delivery Address
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
-                  <div style={{ gridColumn: '1/-1' }}>
+                <div className="address-form-grid">
+                  <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Full Name *</label>
                     <input className="input" value={address.name} onChange={e => setAddress({...address, name: e.target.value})} placeholder="Enter your full name" />
                   </div>
-                  <div style={{ gridColumn: '1/-1' }}>
+                  <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Phone Number *</label>
                     <input className="input" value={address.phone} onChange={e => setAddress({...address, phone: e.target.value})} placeholder="10-digit mobile number" />
                   </div>
-                  <div style={{ gridColumn: '1/-1' }}>
+                  <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Address Line 1 *</label>
                     <input className="input" value={address.line1} onChange={e => setAddress({...address, line1: e.target.value})} placeholder="House no., Building, Street" />
                   </div>
-                  <div style={{ gridColumn: '1/-1' }}>
+                  <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Address Line 2</label>
                     <input className="input" value={address.line2} onChange={e => setAddress({...address, line2: e.target.value})} placeholder="Area, Landmark (optional)" />
                   </div>
@@ -188,7 +186,7 @@ export default function CheckoutPage() {
           </motion.div>
 
           {/* Summary */}
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', position: 'sticky', top: 'calc(var(--navbar-height) + var(--space-4))' }}>
+          <div className="checkout-summary">
             <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-4)' }}>Order Summary</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', fontSize: 'var(--text-sm)', marginBottom: 'var(--space-5)' }}>
               {items.map(item => (

@@ -23,7 +23,7 @@ export default function Dashboard() {
   return (
     <div className="page" id="admin-dashboard">
       <div className="container" style={{ paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-16)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+        <div className="admin-header">
           <div>
             <h1 className="page-title">Admin Dashboard</h1>
             <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>Welcome to the StyleVerse admin panel</p>
@@ -32,7 +32,7 @@ export default function Dashboard() {
         </div>
 
         {/* Admin Nav */}
-        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-6)', overflowX: 'auto' }}>
+        <div className="admin-nav">
           {[
             { to: '/admin', label: 'Dashboard' },
             { to: '/admin/products', label: 'Products' },
@@ -46,7 +46,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)', marginBottom: 'var(--space-8)' }}>
+        <div className="admin-stats-grid">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -74,25 +74,25 @@ export default function Dashboard() {
           {orders.length === 0 ? (
             <p style={{ color: 'var(--text-tertiary)', padding: 'var(--space-6)', textAlign: 'center' }}>No orders yet. Orders will appear here once customers start ordering.</p>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--text-sm)' }}>
+            <div className="admin-table-wrapper">
+              <table className="admin-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <th style={{ padding: 'var(--space-3)', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: 'var(--text-xs)', textTransform: 'uppercase' }}>Order ID</th>
-                    <th style={{ padding: 'var(--space-3)', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: 'var(--text-xs)', textTransform: 'uppercase' }}>Date</th>
-                    <th style={{ padding: 'var(--space-3)', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: 'var(--text-xs)', textTransform: 'uppercase' }}>Items</th>
-                    <th style={{ padding: 'var(--space-3)', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: 'var(--text-xs)', textTransform: 'uppercase' }}>Total</th>
-                    <th style={{ padding: 'var(--space-3)', textAlign: 'left', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: 'var(--text-xs)', textTransform: 'uppercase' }}>Status</th>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orders.slice(0, 10).map(order => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                      <td style={{ padding: 'var(--space-3)', fontWeight: 600 }}>{order.id}</td>
-                      <td style={{ padding: 'var(--space-3)', color: 'var(--text-secondary)' }}>{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
-                      <td style={{ padding: 'var(--space-3)', color: 'var(--text-secondary)' }}>{order.items?.length || 0}</td>
-                      <td style={{ padding: 'var(--space-3)', fontWeight: 600 }}>{formatPrice(order.total)}</td>
-                      <td style={{ padding: 'var(--space-3)' }}>
+                    <tr key={order.id}>
+                      <td style={{ fontWeight: 600 }}>{order.id}</td>
+                      <td style={{ color: 'var(--text-secondary)' }}>{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
+                      <td style={{ color: 'var(--text-secondary)' }}>{order.items?.length || 0}</td>
+                      <td style={{ fontWeight: 600 }}>{formatPrice(order.total)}</td>
+                      <td>
                         <span style={{ fontSize: 'var(--text-xs)', fontWeight: 600, textTransform: 'uppercase', padding: '2px 8px', borderRadius: 'var(--radius-full)', background: order.status === 'delivered' ? 'var(--color-success-bg)' : order.status === 'shipped' ? 'var(--color-warning-bg)' : 'rgba(201,168,76,0.1)', color: order.status === 'delivered' ? 'var(--color-success)' : order.status === 'shipped' ? 'var(--color-warning)' : 'var(--color-primary)' }}>
                           {order.status}
                         </span>

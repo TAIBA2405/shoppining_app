@@ -3,6 +3,7 @@
    ============================================ */
 
 @import './design-system.css';
+@import './responsive.css';
 
 /* ── Reset ── */
 *,

@@ -21,7 +21,7 @@ export default function OrderList() {
   return (
     <div className="page" id="admin-orders">
       <div className="container" style={{ paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-16)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+        <div className="admin-header">
           <div>
             <h1 className="page-title">Orders</h1>
             <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>{orders.length} total orders</p>

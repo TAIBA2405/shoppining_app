@@ -47,7 +47,7 @@ export default function AccountPage() {
   return (
     <div className="page" id="account-page">
       <div className="container" style={{ paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-16)', maxWidth: 900 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-6)' }}>
+        <div className="account-header">
           <h1 className="page-title">My Account</h1>
           <button className="btn btn-ghost" onClick={handleLogout} style={{ color: 'var(--color-error)' }}>
             <LogOut size={16} /> Logout
@@ -72,8 +72,8 @@ export default function AccountPage() {
         {/* Profile Tab */}
         {tab === 'profile' && (
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', marginBottom: 'var(--space-6)' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--text-2xl)', fontWeight: 700, color: 'var(--color-primary)' }}>
+            <div className="account-profile-info">
+              <div className="account-avatar">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
               <div>
