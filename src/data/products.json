@@ -1,0 +1,788 @@
+{
+  "products": [
+    {
+      "id": "m001",
+      "name": "Classic Fit Oxford Shirt",
+      "description": "Premium cotton Oxford shirt with button-down collar. Perfect for both casual and semi-formal occasions. Breathable fabric with a comfortable, classic fit.",
+      "price": 1299,
+      "originalPrice": 2499,
+      "discount": 48,
+      "images": [
+        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1598033129183-c4f50c736c10?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "shirts",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Light Blue", "hex": "#B0D4F1"},
+        {"name": "Navy", "hex": "#1B2A4A"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 234,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["bestseller", "office-wear"]
+    },
+    {
+      "id": "m002",
+      "name": "Slim Fit Chino Trousers",
+      "description": "Modern slim fit chino trousers made from stretch cotton twill. Versatile and comfortable, ideal for smart casual dressing.",
+      "price": 1499,
+      "originalPrice": 2999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "trousers",
+      "sizes": ["28", "30", "32", "34", "36", "38"],
+      "colors": [
+        {"name": "Khaki", "hex": "#C3B091"},
+        {"name": "Navy", "hex": "#1B2A4A"},
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Olive", "hex": "#556B2F"}
+      ],
+      "rating": 4.3,
+      "reviewCount": 189,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["bestseller", "casual"]
+    },
+    {
+      "id": "m003",
+      "name": "Leather Biker Jacket",
+      "description": "Genuine leather biker jacket with quilted details. Premium quality leather with satin lining for ultimate comfort and style.",
+      "price": 4999,
+      "originalPrice": 8999,
+      "discount": 44,
+      "images": [
+        "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1520975954732-35dd22299614?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "jackets",
+      "sizes": ["M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Brown", "hex": "#654321"}
+      ],
+      "rating": 4.7,
+      "reviewCount": 312,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["premium", "winter"]
+    },
+    {
+      "id": "m004",
+      "name": "Round Neck Cotton T-Shirt",
+      "description": "Super soft premium cotton t-shirt with a relaxed fit. Bio-washed for extra softness. A wardrobe essential for every man.",
+      "price": 599,
+      "originalPrice": 999,
+      "discount": 40,
+      "images": [
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "tshirts",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Grey", "hex": "#808080"},
+        {"name": "Navy", "hex": "#1B2A4A"}
+      ],
+      "rating": 4.2,
+      "reviewCount": 567,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["essentials", "casual"]
+    },
+    {
+      "id": "m005",
+      "name": "Sport Running Sneakers",
+      "description": "Lightweight running sneakers with responsive cushioning. Breathable mesh upper and durable rubber outsole for all-day comfort.",
+      "price": 2499,
+      "originalPrice": 4499,
+      "discount": 44,
+      "images": [
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "shoes",
+      "sizes": ["7", "8", "9", "10", "11"],
+      "colors": [
+        {"name": "Red/White", "hex": "#DC2626"},
+        {"name": "Black/Gold", "hex": "#1A1A1A"},
+        {"name": "Blue/White", "hex": "#3B82F6"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 421,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": true,
+      "tags": ["trending", "sports"]
+    },
+    {
+      "id": "w001",
+      "name": "Floral Print Maxi Dress",
+      "description": "Elegant floral print maxi dress with a flattering A-line silhouette. Lightweight georgette fabric, perfect for brunches and summer outings.",
+      "price": 1799,
+      "originalPrice": 3499,
+      "discount": 49,
+      "images": [
+        "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "dresses",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": [
+        {"name": "Floral Blue", "hex": "#6495ED"},
+        {"name": "Floral Pink", "hex": "#FFB6C1"},
+        {"name": "Floral Green", "hex": "#90EE90"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 345,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": true,
+      "tags": ["trending", "summer"]
+    },
+    {
+      "id": "w002",
+      "name": "High-Waist Skinny Jeans",
+      "description": "Classic high-waist skinny jeans in premium stretch denim. Features a button fly and classic five-pocket styling. The perfect everyday jeans.",
+      "price": 1599,
+      "originalPrice": 2999,
+      "discount": 47,
+      "images": [
+        "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1475178626620-a4d074967571?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "jeans",
+      "sizes": ["26", "28", "30", "32", "34"],
+      "colors": [
+        {"name": "Dark Blue", "hex": "#1B3A5C"},
+        {"name": "Light Blue", "hex": "#ADD8E6"},
+        {"name": "Black", "hex": "#1A1A1A"}
+      ],
+      "rating": 4.4,
+      "reviewCount": 278,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["bestseller", "casual"]
+    },
+    {
+      "id": "w003",
+      "name": "Silk Blend Saree",
+      "description": "Luxurious silk blend saree with intricate zari border. Comes with an unstitched blouse piece. Perfect for festivals and special occasions.",
+      "price": 2999,
+      "originalPrice": 5999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "ethnic",
+      "sizes": ["Free Size"],
+      "colors": [
+        {"name": "Royal Red", "hex": "#B22222"},
+        {"name": "Emerald Green", "hex": "#046307"},
+        {"name": "Royal Blue", "hex": "#1E3A7B"},
+        {"name": "Gold", "hex": "#C9A84C"}
+      ],
+      "rating": 4.8,
+      "reviewCount": 456,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["premium", "festive", "bestseller"]
+    },
+    {
+      "id": "w004",
+      "name": "Crop Top & Palazzo Set",
+      "description": "Trendy crop top with matching palazzo pants. Rayon fabric with block print design. Comfortable and stylish for casual outings.",
+      "price": 999,
+      "originalPrice": 1999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "coords",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        {"name": "Coral", "hex": "#FF7F50"},
+        {"name": "Teal", "hex": "#008080"},
+        {"name": "Mustard", "hex": "#FFDB58"}
+      ],
+      "rating": 4.1,
+      "reviewCount": 189,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": false,
+      "tags": ["casual", "summer"]
+    },
+    {
+      "id": "w005",
+      "name": "Embroidered Kurta Set",
+      "description": "Beautiful chikankari embroidered cotton kurta with matching dupatta and pants. Traditional craftsmanship with a modern silhouette.",
+      "price": 1899,
+      "originalPrice": 3499,
+      "discount": 46,
+      "images": [
+        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1583391733981-8b530a39d8e6?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "ethnic",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Pink", "hex": "#FFB6C1"},
+        {"name": "Sky Blue", "hex": "#87CEEB"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 312,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["ethnic", "festive"]
+    },
+    {
+      "id": "w006",
+      "name": "Quilted Tote Bag",
+      "description": "Spacious quilted tote bag with gold chain handles. Faux leather with satin lining and multiple compartments. Elegant and functional.",
+      "price": 1299,
+      "originalPrice": 2499,
+      "discount": 48,
+      "images": [
+        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "bags",
+      "sizes": ["One Size"],
+      "colors": [
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Tan", "hex": "#D2B48C"},
+        {"name": "Burgundy", "hex": "#800020"}
+      ],
+      "rating": 4.3,
+      "reviewCount": 156,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["accessories", "office"]
+    },
+    {
+      "id": "k001",
+      "name": "Superhero Print T-Shirt",
+      "description": "Fun superhero graphic print t-shirt for kids. 100% cotton with comfort fit. Vibrant colors that stay bright after multiple washes.",
+      "price": 399,
+      "originalPrice": 799,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1543854589-fdd89e198901?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "tshirts",
+      "sizes": ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-12Y"],
+      "colors": [
+        {"name": "Red", "hex": "#DC2626"},
+        {"name": "Blue", "hex": "#2563EB"},
+        {"name": "Yellow", "hex": "#EAB308"}
+      ],
+      "rating": 4.4,
+      "reviewCount": 234,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["cartoon", "casual"]
+    },
+    {
+      "id": "k002",
+      "name": "Princess Party Dress",
+      "description": "Adorable princess party dress with tulle skirt and sequin bodice. Perfect for birthdays, weddings, and festive celebrations.",
+      "price": 1199,
+      "originalPrice": 2499,
+      "discount": 52,
+      "images": [
+        "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "dresses",
+      "sizes": ["2-3Y", "4-5Y", "6-7Y", "8-9Y"],
+      "colors": [
+        {"name": "Pink", "hex": "#FF69B4"},
+        {"name": "Purple", "hex": "#9370DB"},
+        {"name": "White", "hex": "#FFFFFF"}
+      ],
+      "rating": 4.7,
+      "reviewCount": 189,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": true,
+      "tags": ["party", "festive"]
+    },
+    {
+      "id": "k003",
+      "name": "Denim Dungaree Set",
+      "description": "Cute denim dungaree with soft cotton striped t-shirt. Easy snap buttons for quick dressing. Durable and comfortable for active kids.",
+      "price": 899,
+      "originalPrice": 1799,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "sets",
+      "sizes": ["1-2Y", "2-3Y", "4-5Y", "6-7Y"],
+      "colors": [
+        {"name": "Blue Denim", "hex": "#4682B4"},
+        {"name": "Light Wash", "hex": "#B0C4DE"}
+      ],
+      "rating": 4.3,
+      "reviewCount": 145,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["casual", "everyday"]
+    },
+    {
+      "id": "k004",
+      "name": "School Uniform Set",
+      "description": "Complete school uniform set with shirt, shorts/skirt, and tie. Wrinkle-free poly-cotton blend. Comfortable for long school hours.",
+      "price": 799,
+      "originalPrice": 1499,
+      "discount": 47,
+      "images": [
+        "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "uniform",
+      "sizes": ["4-5Y", "6-7Y", "8-9Y", "10-12Y", "12-14Y"],
+      "colors": [
+        {"name": "White/Navy", "hex": "#1B2A4A"},
+        {"name": "White/Grey", "hex": "#808080"}
+      ],
+      "rating": 4.1,
+      "reviewCount": 267,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["school", "everyday"]
+    },
+    {
+      "id": "m006",
+      "name": "Formal Blazer",
+      "description": "Tailored slim-fit formal blazer in premium poly-viscose blend. Notch lapels, single button closure with structured shoulders for a sharp look.",
+      "price": 3499,
+      "originalPrice": 6999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "blazers",
+      "sizes": ["38", "40", "42", "44", "46"],
+      "colors": [
+        {"name": "Charcoal", "hex": "#36454F"},
+        {"name": "Navy", "hex": "#1B2A4A"},
+        {"name": "Black", "hex": "#1A1A1A"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 198,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["formal", "office-wear", "premium"]
+    },
+    {
+      "id": "m007",
+      "name": "Printed Casual Shirt",
+      "description": "Trendy printed casual shirt with a relaxed fit. Soft viscose fabric with all-over tropical print. Perfect for weekend outings and vacations.",
+      "price": 899,
+      "originalPrice": 1799,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1563630423918-b58f07336ac9?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "shirts",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "Tropical Blue", "hex": "#4169E1"},
+        {"name": "Palm Green", "hex": "#228B22"},
+        {"name": "Sunset Orange", "hex": "#FF6347"}
+      ],
+      "rating": 4.0,
+      "reviewCount": 123,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": false,
+      "tags": ["casual", "vacation"]
+    },
+    {
+      "id": "w007",
+      "name": "Stiletto Heels",
+      "description": "Elegant pointed-toe stiletto heels in premium faux suede. 4-inch heel with cushioned insole for comfort. Perfect for parties and formal events.",
+      "price": 1799,
+      "originalPrice": 3499,
+      "discount": 49,
+      "images": [
+        "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "shoes",
+      "sizes": ["5", "6", "7", "8", "9"],
+      "colors": [
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Red", "hex": "#DC143C"},
+        {"name": "Nude", "hex": "#E8C39E"}
+      ],
+      "rating": 4.2,
+      "reviewCount": 167,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["party", "formal"]
+    },
+    {
+      "id": "m008",
+      "name": "Denim Jacket",
+      "description": "Classic denim jacket with a modern twist. Premium washed denim with button closure. Timeless piece for layering all year round.",
+      "price": 1999,
+      "originalPrice": 3999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "jackets",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        {"name": "Medium Wash", "hex": "#4682B4"},
+        {"name": "Dark Wash", "hex": "#1B3A5C"},
+        {"name": "Black", "hex": "#1A1A1A"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 234,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["casual", "layering"]
+    },
+    {
+      "id": "w008",
+      "name": "Anarkali Suit Set",
+      "description": "Gorgeous Anarkali suit with heavy embroidery work. Includes matching dupatta and churidar. Ideal for weddings and festive occasions.",
+      "price": 3499,
+      "originalPrice": 6999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1583391733975-d7be0e25fc85?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "ethnic",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "Maroon", "hex": "#800000"},
+        {"name": "Teal", "hex": "#008080"},
+        {"name": "Wine", "hex": "#722F37"}
+      ],
+      "rating": 4.7,
+      "reviewCount": 289,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": true,
+      "tags": ["wedding", "festive", "premium"]
+    },
+    {
+      "id": "k005",
+      "name": "Kids Sneakers",
+      "description": "Colorful velcro-strap sneakers for kids. Lightweight EVA sole with anti-slip design. Easy to put on and take off. Great for running and playing.",
+      "price": 699,
+      "originalPrice": 1399,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "shoes",
+      "sizes": ["5C", "6C", "7C", "8C", "9C", "10C"],
+      "colors": [
+        {"name": "Multi Color", "hex": "#FF6347"},
+        {"name": "Blue/Green", "hex": "#4169E1"},
+        {"name": "Pink/Purple", "hex": "#FF69B4"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 312,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["school", "sports"]
+    },
+    {
+      "id": "m009",
+      "name": "Aviator Sunglasses",
+      "description": "Classic aviator sunglasses with UV400 protection. Metal frame with gradient lenses. Lightweight and comfortable for all-day wear.",
+      "price": 799,
+      "originalPrice": 1599,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "accessories",
+      "sizes": ["One Size"],
+      "colors": [
+        {"name": "Gold/Green", "hex": "#C9A84C"},
+        {"name": "Silver/Blue", "hex": "#C0C0C0"},
+        {"name": "Black/Grey", "hex": "#1A1A1A"}
+      ],
+      "rating": 4.3,
+      "reviewCount": 189,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["accessories", "summer"]
+    },
+    {
+      "id": "w009",
+      "name": "Yoga Pants",
+      "description": "High-performance yoga pants with four-way stretch. Moisture-wicking fabric with hidden waistband pocket. Squat-proof and ultra-comfortable.",
+      "price": 899,
+      "originalPrice": 1799,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "activewear",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": [
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Navy", "hex": "#1B2A4A"},
+        {"name": "Burgundy", "hex": "#800020"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 445,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["gym", "activewear"]
+    },
+    {
+      "id": "m010",
+      "name": "Polo T-Shirt",
+      "description": "Classic polo t-shirt in premium pique cotton. Ribbed collar and cuff with signature embroidered logo. Smart casual essential.",
+      "price": 799,
+      "originalPrice": 1499,
+      "discount": 47,
+      "images": [
+        "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1625910513413-5fc5e78b5de0?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "tshirts",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Black", "hex": "#1A1A1A"},
+        {"name": "Red", "hex": "#DC2626"},
+        {"name": "Green", "hex": "#16A34A"}
+      ],
+      "rating": 4.4,
+      "reviewCount": 356,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["smart-casual", "essentials"]
+    },
+    {
+      "id": "w010",
+      "name": "Statement Necklace",
+      "description": "Stunning layered statement necklace with semi-precious stones. Gold-plated chain with adjustable clasp. Elevates any outfit instantly.",
+      "price": 599,
+      "originalPrice": 1199,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1515562141589-67f0d569b6e5?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "jewelry",
+      "sizes": ["One Size"],
+      "colors": [
+        {"name": "Gold", "hex": "#C9A84C"},
+        {"name": "Silver", "hex": "#C0C0C0"},
+        {"name": "Rose Gold", "hex": "#B76E79"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 198,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": false,
+      "tags": ["accessories", "party"]
+    },
+    {
+      "id": "k006",
+      "name": "Ethnic Kurta Set",
+      "description": "Festive kurta set for kids with dhoti pants. Soft cotton with block print design. Perfect for Diwali, Eid, and family celebrations.",
+      "price": 799,
+      "originalPrice": 1599,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "ethnic",
+      "sizes": ["2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-12Y"],
+      "colors": [
+        {"name": "Cream/Gold", "hex": "#FFFDD0"},
+        {"name": "White/Blue", "hex": "#F0F8FF"},
+        {"name": "Yellow/Red", "hex": "#FFD700"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 178,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["festive", "ethnic"]
+    },
+    {
+      "id": "m011",
+      "name": "Kurta Pajama Set",
+      "description": "Elegant cotton kurta pajama set with fine thread work. Comfortable and breathable. Perfect for festivals, pujas, and family gatherings.",
+      "price": 1499,
+      "originalPrice": 2999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d44?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "ethnic",
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Cream", "hex": "#FFFDD0"},
+        {"name": "Sky Blue", "hex": "#87CEEB"}
+      ],
+      "rating": 4.5,
+      "reviewCount": 267,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": true,
+      "tags": ["festive", "ethnic", "traditional"]
+    },
+    {
+      "id": "w011",
+      "name": "Cotton Casual Top",
+      "description": "Relaxed fit cotton top with ruffled sleeves. Soft pastel shades perfect for everyday wear. Light and breathable fabric.",
+      "price": 699,
+      "originalPrice": 1299,
+      "discount": 46,
+      "images": [
+        "https://images.unsplash.com/photo-1434389677669-e08b4cda3a95?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&h=750&fit=crop"
+      ],
+      "category": "women",
+      "subcategory": "tops",
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "colors": [
+        {"name": "White", "hex": "#FFFFFF"},
+        {"name": "Peach", "hex": "#FFDAB9"},
+        {"name": "Lavender", "hex": "#E6E6FA"},
+        {"name": "Mint", "hex": "#98FB98"}
+      ],
+      "rating": 4.2,
+      "reviewCount": 203,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["casual", "everyday"]
+    },
+    {
+      "id": "m012",
+      "name": "Analog Watch",
+      "description": "Classic analog watch with genuine leather strap. Stainless steel case with mineral crystal glass. Water-resistant up to 30m.",
+      "price": 1999,
+      "originalPrice": 3999,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=600&h=750&fit=crop"
+      ],
+      "category": "men",
+      "subcategory": "accessories",
+      "sizes": ["One Size"],
+      "colors": [
+        {"name": "Brown/Gold", "hex": "#8B4513"},
+        {"name": "Black/Silver", "hex": "#1A1A1A"},
+        {"name": "Navy/Rose Gold", "hex": "#1B2A4A"}
+      ],
+      "rating": 4.6,
+      "reviewCount": 345,
+      "inStock": true,
+      "isNew": true,
+      "isFeatured": true,
+      "tags": ["accessories", "premium", "gifting"]
+    },
+    {
+      "id": "k007",
+      "name": "Hooded Sweatshirt",
+      "description": "Cozy fleece-lined hooded sweatshirt for kids. Front kangaroo pocket with ribbed cuffs. Warm and soft for winter days.",
+      "price": 599,
+      "originalPrice": 1199,
+      "discount": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=750&fit=crop",
+        "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=600&h=750&fit=crop"
+      ],
+      "category": "kids",
+      "subcategory": "winterwear",
+      "sizes": ["4-5Y", "6-7Y", "8-9Y", "10-12Y"],
+      "colors": [
+        {"name": "Grey", "hex": "#808080"},
+        {"name": "Pink", "hex": "#FF69B4"},
+        {"name": "Blue", "hex": "#4169E1"},
+        {"name": "Red", "hex": "#DC2626"}
+      ],
+      "rating": 4.4,
+      "reviewCount": 213,
+      "inStock": true,
+      "isNew": false,
+      "isFeatured": false,
+      "tags": ["winter", "casual"]
+    }
+  ]
+}

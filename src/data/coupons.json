@@ -1,0 +1,56 @@
+{
+  "coupons": [
+    {
+      "code": "WELCOME10",
+      "description": "10% off on your first order",
+      "discountType": "percentage",
+      "discountValue": 10,
+      "minOrder": 999,
+      "maxDiscount": 500,
+      "validTill": "2026-12-31",
+      "isActive": true
+    },
+    {
+      "code": "STYLE500",
+      "description": "Flat ₹500 off on orders above ₹2999",
+      "discountType": "flat",
+      "discountValue": 500,
+      "minOrder": 2999,
+      "maxDiscount": 500,
+      "validTill": "2026-12-31",
+      "isActive": true
+    },
+    {
+      "code": "FESTIVE20",
+      "description": "20% off on ethnic wear",
+      "discountType": "percentage",
+      "discountValue": 20,
+      "minOrder": 1499,
+      "maxDiscount": 1000,
+      "validTill": "2026-12-31",
+      "isActive": true,
+      "category": "ethnic"
+    },
+    {
+      "code": "KIDS30",
+      "description": "30% off on kids collection",
+      "discountType": "percentage",
+      "discountValue": 30,
+      "minOrder": 799,
+      "maxDiscount": 500,
+      "validTill": "2026-12-31",
+      "isActive": true,
+      "category": "kids"
+    },
+    {
+      "code": "FREESHIP",
+      "description": "Free shipping on all orders",
+      "discountType": "shipping",
+      "discountValue": 0,
+      "minOrder": 499,
+      "maxDiscount": 99,
+      "validTill": "2026-12-31",
+      "isActive": true
+    }
+  ]
+}

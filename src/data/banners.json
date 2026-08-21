@@ -1,0 +1,66 @@
+{
+  "banners": [
+    {
+      "id": "b1",
+      "title": "End of Season Sale",
+      "subtitle": "Up to 60% Off on Everything",
+      "cta": "Shop Now",
+      "link": "/category/all",
+      "image": "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1400&h=600&fit=crop",
+      "gradient": "linear-gradient(135deg, rgba(201, 168, 76, 0.9), rgba(10, 10, 15, 0.8))"
+    },
+    {
+      "id": "b2",
+      "title": "New Arrivals",
+      "subtitle": "Trending Styles for the Season",
+      "cta": "Explore Collection",
+      "link": "/category/new",
+      "image": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1400&h=600&fit=crop",
+      "gradient": "linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(10, 10, 15, 0.8))"
+    },
+    {
+      "id": "b3",
+      "title": "Festive Collection",
+      "subtitle": "Ethnic Wear Starting at ₹799",
+      "cta": "Shop Ethnic",
+      "link": "/category/ethnic",
+      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1400&h=600&fit=crop",
+      "gradient": "linear-gradient(135deg, rgba(220, 38, 38, 0.7), rgba(10, 10, 15, 0.8))"
+    },
+    {
+      "id": "b4",
+      "title": "Kids Special",
+      "subtitle": "Cute Styles for Little Ones — Flat 50% Off",
+      "cta": "Shop Kids",
+      "link": "/category/kids",
+      "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=1400&h=600&fit=crop",
+      "gradient": "linear-gradient(135deg, rgba(34, 197, 94, 0.7), rgba(10, 10, 15, 0.8))"
+    }
+  ],
+  "offers": [
+    {
+      "id": "o1",
+      "icon": "Truck",
+      "title": "Free Shipping",
+      "description": "On orders above ₹499"
+    },
+    {
+      "id": "o2",
+      "icon": "RotateCcw",
+      "title": "Easy Returns",
+      "description": "7-day return policy"
+    },
+    {
+      "id": "o3",
+      "icon": "Shield",
+      "title": "Secure Payment",
+      "description": "100% secure checkout"
+    },
+    {
+      "id": "o4",
+      "icon": "Headphones",
+      "title": "24/7 Support",
+      "description": "WhatsApp & call support"
+    }
+  ]
+}
