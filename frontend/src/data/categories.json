@@ -1,0 +1,50 @@
+{
+  "categories": [
+    {
+      "id": "men",
+      "name": "Men",
+      "image": "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500&h=600&fit=crop",
+      "subcategories": [
+        {"id": "shirts", "name": "Shirts"},
+        {"id": "tshirts", "name": "T-Shirts"},
+        {"id": "trousers", "name": "Trousers"},
+        {"id": "jeans", "name": "Jeans"},
+        {"id": "jackets", "name": "Jackets"},
+        {"id": "blazers", "name": "Blazers"},
+        {"id": "ethnic", "name": "Ethnic Wear"},
+        {"id": "shoes", "name": "Shoes"},
+        {"id": "accessories", "name": "Accessories"}
+      ]
+    },
+    {
+      "id": "women",
+      "name": "Women",
+      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&h=600&fit=crop",
+      "subcategories": [
+        {"id": "dresses", "name": "Dresses"},
+        {"id": "tops", "name": "Tops"},
+        {"id": "jeans", "name": "Jeans"},
+        {"id": "ethnic", "name": "Ethnic Wear"},
+        {"id": "coords", "name": "Co-ord Sets"},
+        {"id": "activewear", "name": "Activewear"},
+        {"id": "bags", "name": "Bags"},
+        {"id": "shoes", "name": "Shoes"},
+        {"id": "jewelry", "name": "Jewelry"}
+      ]
+    },
+    {
+      "id": "kids",
+      "name": "Kids",
+      "image": "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=500&h=600&fit=crop",
+      "subcategories": [
+        {"id": "tshirts", "name": "T-Shirts"},
+        {"id": "dresses", "name": "Dresses"},
+        {"id": "sets", "name": "Sets & Combos"},
+        {"id": "ethnic", "name": "Ethnic Wear"},
+        {"id": "uniform", "name": "School Uniforms"},
+        {"id": "shoes", "name": "Shoes"},
+        {"id": "winterwear", "name": "Winterwear"}
+      ]
+    }
+  ]
+}
