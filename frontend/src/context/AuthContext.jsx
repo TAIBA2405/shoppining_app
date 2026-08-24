@@ -42,12 +42,28 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Get extra profile data from Firestore
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
-        if (userDoc.exists()) {
-          setUser({ uid: firebaseUser.uid, ...userDoc.data() })
-        } else {
-          setUser({ uid: firebaseUser.uid, email: firebaseUser.email, name: firebaseUser.displayName || '' })
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
+          if (userDoc.exists()) {
+            setUser({ uid: firebaseUser.uid, ...userDoc.data() })
+          } else {
+            // Firestore doc doesn't exist yet — use Auth data
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: firebaseUser.displayName || '',
+              isAdmin: false
+            })
+          }
+        } catch (e) {
+          // Firestore offline — still log user in with basic info
+          console.warn('Firestore unavailable, using auth data:', e)
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            name: firebaseUser.displayName || '',
+            isAdmin: false
+          })
         }
       } else {
         setUser(null)
@@ -70,7 +86,12 @@ export function AuthProvider({ children }) {
         addresses: [],
         createdAt: new Date().toISOString()
       }
-      await setDoc(doc(db, 'users', cred.user.uid), userData)
+      // Try to write to Firestore — don't block signup if it fails
+      try {
+        await setDoc(doc(db, 'users', cred.user.uid), userData)
+      } catch (firestoreErr) {
+        console.warn('Firestore write failed but auth succeeded:', firestoreErr)
+      }
       return { success: true }
     } catch (e) {
       console.error('Signup error:', e.code, e.message)
