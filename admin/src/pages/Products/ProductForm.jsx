@@ -37,19 +37,20 @@ export default function ProductForm() {
   // Load existing product for edit
   useEffect(() => {
     if (isEdit) {
-      const products = getProducts()
-      const p = products.find(pr => pr.id === productId)
-      if (p) {
-        setForm({
-          name: p.name || '', description: p.description || '',
-          price: p.price || '', originalPrice: p.originalPrice || '',
-          category: p.category || 'men', subcategory: p.subcategory || '',
-          sizes: p.sizes || [], colors: p.colors || [],
-          images: p.images?.length ? p.images : [''],
-          inStock: p.inStock !== false, isFeatured: !!p.isFeatured,
-          isNew: !!p.isNew, tags: (p.tags || []).join(', '), discount: p.discount || ''
-        })
-      }
+      getProducts().then(products => {
+        const p = products.find(pr => pr.id === productId)
+        if (p) {
+          setForm({
+            name: p.name || '', description: p.description || '',
+            price: p.price || '', originalPrice: p.originalPrice || '',
+            category: p.category || 'men', subcategory: p.subcategory || '',
+            sizes: p.sizes || [], colors: p.colors || [],
+            images: p.images?.length ? p.images : [''],
+            inStock: p.inStock !== false, isFeatured: !!p.isFeatured,
+            isNew: !!p.isNew, tags: (p.tags || []).join(', '), discount: p.discount || ''
+          })
+        }
+      })
     }
   }, [productId])
 
@@ -87,7 +88,6 @@ export default function ProductForm() {
       return
     }
     setSaving(true)
-    await new Promise(r => setTimeout(r, 400)) // simulate async
 
     const data = {
       name: form.name.trim(),
@@ -107,14 +107,14 @@ export default function ProductForm() {
     }
 
     if (isEdit) {
-      updateProduct(productId, data)
+      await updateProduct(productId, data)
       toast.success('Product updated successfully!')
     } else {
-      addProduct(data)
+      await addProduct(data)
       toast.success('Product added successfully!')
     }
     setSaving(false)
-    navigate('/admin/products')
+    navigate('/products')
   }
 
   // Preview

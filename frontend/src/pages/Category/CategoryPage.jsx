@@ -100,12 +100,12 @@ export default function CategoryPage() {
   const pageTitle = searchQuery
     ? `Search: "${searchQuery}"`
     : categoryId === 'all'
-    ? 'All Products'
-    : categoryId === 'new'
-    ? 'New Arrivals'
-    : category
-    ? `${category.name}'s Fashion`
-    : 'Products'
+      ? 'All Products'
+      : categoryId === 'new'
+        ? 'New Arrivals'
+        : category
+          ? `${category.name}'s Fashion`
+          : 'Products'
 
   return (
     <div className="page" id="category-page">

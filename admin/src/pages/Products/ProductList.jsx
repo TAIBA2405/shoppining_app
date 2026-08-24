@@ -16,9 +16,16 @@ export default function ProductList() {
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [stockFilter, setStockFilter] = useState('all')
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { setProducts(getProducts()) }, [])
-  const refresh = () => setProducts(getProducts())
+  useEffect(() => {
+    getProducts().then(data => {
+      setProducts(data)
+      setLoading(false)
+    })
+  }, [])
+
+  const refresh = () => getProducts().then(setProducts)
 
   const categories = ['all', ...new Set(products.map(p => p.category))]
 
@@ -36,6 +43,12 @@ export default function ProductList() {
     setDeleteTarget(null)
     refresh()
   }
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'var(--text-tertiary)' }}>
+      Loading products...
+    </div>
+  )
 
   return (
     <div id="admin-products">

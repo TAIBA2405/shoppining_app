@@ -1,15 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, MapPin, ShoppingBag, LogOut, Package } from 'lucide-react'
+import { User, ShoppingBag, LogOut, Package } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { formatPrice } from '../../utils/helpers'
 
 export default function AccountPage() {
-  const { user, isAuthenticated, logout, getOrders, updateProfile } = useAuth()
+  const { user, isAuthenticated, logout, getOrders } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
   const [tab, setTab] = useState(window.location.pathname.includes('orders') ? 'orders' : 'profile')
+  const [orders, setOrders] = useState([])
+  const [loadingOrders, setLoadingOrders] = useState(false)
+
+  useEffect(() => {
+    if (tab === 'orders' && isAuthenticated) {
+      setLoadingOrders(true)
+      getOrders().then(data => {
+        setOrders(data)
+        setLoadingOrders(false)
+      })
+    }
+  }, [tab, isAuthenticated])
 
   if (!isAuthenticated) {
     return (
@@ -23,18 +35,11 @@ export default function AccountPage() {
     )
   }
 
-  const orders = getOrders()
-
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     toast.info('Logged out')
     navigate('/')
   }
-
-  const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'orders', label: 'Orders', icon: Package },
-  ]
 
   const statusColors = {
     placed: 'var(--color-info)',
@@ -43,6 +48,11 @@ export default function AccountPage() {
     delivered: 'var(--color-success)',
     cancelled: 'var(--color-error)'
   }
+
+  const tabs = [
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'orders', label: 'Orders', icon: Package },
+  ]
 
   return (
     <div className="page" id="account-page">
@@ -58,7 +68,8 @@ export default function AccountPage() {
         <div style={{ display: 'flex', gap: 'var(--space-1)', borderBottom: '1px solid var(--border-color)', marginBottom: 'var(--space-6)' }}>
           {tabs.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              padding: 'var(--space-3) var(--space-5)', fontSize: 'var(--text-sm)', fontWeight: tab === t.id ? 600 : 400,
+              padding: 'var(--space-3) var(--space-5)', fontSize: 'var(--text-sm)',
+              fontWeight: tab === t.id ? 600 : 400,
               color: tab === t.id ? 'var(--color-primary)' : 'var(--text-secondary)',
               borderBottom: `2px solid ${tab === t.id ? 'var(--color-primary)' : 'transparent'}`,
               background: 'none', border: 'none', borderBottomWidth: 2, borderBottomStyle: 'solid',
@@ -73,25 +84,27 @@ export default function AccountPage() {
         {tab === 'profile' && (
           <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
             <div className="account-profile-info">
-              <div className="account-avatar">
-                {user.name?.charAt(0).toUpperCase()}
-              </div>
+              <div className="account-avatar">{user.name?.charAt(0).toUpperCase()}</div>
               <div>
                 <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>{user.name}</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>{user.email}</p>
                 {user.phone && <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)' }}>{user.phone}</p>}
               </div>
             </div>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
-              Member since {new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
-            </p>
+            {user.createdAt && (
+              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>
+                Member since {new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+              </p>
+            )}
           </div>
         )}
 
         {/* Orders Tab */}
         {tab === 'orders' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-            {orders.length === 0 ? (
+            {loadingOrders ? (
+              <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-tertiary)' }}>Loading orders...</div>
+            ) : orders.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-secondary)' }}>
                 <ShoppingBag size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }} />
                 <h3>No orders yet</h3>
@@ -112,10 +125,10 @@ export default function AccountPage() {
                     </span>
                   </div>
                   <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-                    {order.items?.length} item{order.items?.length !== 1 ? 's' : ''} · {formatPrice(order.total)} · {order.paymentMethod?.toUpperCase()}
+                    {order.items?.length} item{order.items?.length !== 1 ? 's' : ''} &middot; {formatPrice(order.total)} &middot; {order.paymentMethod?.toUpperCase()}
                   </div>
                   <Link to={`/order-tracking/${order.id}`} style={{ fontSize: 'var(--text-sm)', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>
-                    Track Order →
+                    Track Order &rarr;
                   </Link>
                 </div>
               ))

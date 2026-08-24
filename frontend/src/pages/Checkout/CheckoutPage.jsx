@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState({ name: '', phone: '', line1: '', line2: '', city: '', state: '', pincode: '' })
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [utrNumber, setUtrNumber] = useState('')
+  const [placing, setPlacing] = useState(false)
   const { items, subtotal, shipping, total, coupon, couponDiscount, clearCart } = useCart()
   const { user, placeOrder } = useAuth()
   const toast = useToast()
@@ -28,7 +29,7 @@ export default function CheckoutPage() {
     )
   }
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (step === 1) {
       if (!address.name || !address.phone || !address.line1 || !address.city || !address.state || !address.pincode) {
         toast.error('Please fill all address fields'); return
@@ -36,7 +37,8 @@ export default function CheckoutPage() {
       setStep(2); return
     }
     if (step === 2) {
-      const order = placeOrder({
+      setPlacing(true)
+      const order = await placeOrder({
         items,
         address,
         paymentMethod,
@@ -89,31 +91,31 @@ export default function CheckoutPage() {
                 <div className="address-form-grid">
                   <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Full Name *</label>
-                    <input className="input" value={address.name} onChange={e => setAddress({...address, name: e.target.value})} placeholder="Enter your full name" />
+                    <input className="input" value={address.name} onChange={e => setAddress({ ...address, name: e.target.value })} placeholder="Enter your full name" />
                   </div>
                   <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Phone Number *</label>
-                    <input className="input" value={address.phone} onChange={e => setAddress({...address, phone: e.target.value})} placeholder="10-digit mobile number" />
+                    <input className="input" value={address.phone} onChange={e => setAddress({ ...address, phone: e.target.value })} placeholder="10-digit mobile number" />
                   </div>
                   <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Address Line 1 *</label>
-                    <input className="input" value={address.line1} onChange={e => setAddress({...address, line1: e.target.value})} placeholder="House no., Building, Street" />
+                    <input className="input" value={address.line1} onChange={e => setAddress({ ...address, line1: e.target.value })} placeholder="House no., Building, Street" />
                   </div>
                   <div className="address-form-full">
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>Address Line 2</label>
-                    <input className="input" value={address.line2} onChange={e => setAddress({...address, line2: e.target.value})} placeholder="Area, Landmark (optional)" />
+                    <input className="input" value={address.line2} onChange={e => setAddress({ ...address, line2: e.target.value })} placeholder="Area, Landmark (optional)" />
                   </div>
                   <div>
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>City *</label>
-                    <input className="input" value={address.city} onChange={e => setAddress({...address, city: e.target.value})} placeholder="City" />
+                    <input className="input" value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })} placeholder="City" />
                   </div>
                   <div>
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>State *</label>
-                    <input className="input" value={address.state} onChange={e => setAddress({...address, state: e.target.value})} placeholder="State" />
+                    <input className="input" value={address.state} onChange={e => setAddress({ ...address, state: e.target.value })} placeholder="State" />
                   </div>
                   <div>
                     <label style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'block', marginBottom: 'var(--space-1)' }}>PIN Code *</label>
-                    <input className="input" value={address.pincode} onChange={e => setAddress({...address, pincode: e.target.value})} placeholder="6-digit PIN" />
+                    <input className="input" value={address.pincode} onChange={e => setAddress({ ...address, pincode: e.target.value })} placeholder="6-digit PIN" />
                   </div>
                 </div>
               </div>
@@ -160,7 +162,7 @@ export default function CheckoutPage() {
                             flexDirection: 'column', gap: 8
                           }}>
                             <div style={{ width: 120, height: 120, background: '#f0f0f0', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333', fontSize: 11, textAlign: 'center', padding: 8 }}>
-                              [Demo QR Code]<br/>Scan to pay {formatPrice(total)}
+                              [Demo QR Code]<br />Scan to pay {formatPrice(total)}
                             </div>
                           </div>
                           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)', textAlign: 'center', marginBottom: 'var(--space-3)' }}>
@@ -209,8 +211,8 @@ export default function CheckoutPage() {
                   <ArrowLeft size={16} /> Back
                 </button>
               )}
-              <button className="btn btn-primary btn-lg" onClick={handlePlaceOrder} style={{ flex: 1 }}>
-                {step === 1 ? 'Continue to Payment' : 'Place Order'} <ArrowRight size={18} />
+              <button className="btn btn-primary btn-lg" onClick={handlePlaceOrder} style={{ flex: 1 }} disabled={placing}>
+                {placing ? 'Placing order...' : step === 1 ? 'Continue to Payment' : 'Place Order'} <ArrowRight size={18} />
               </button>
             </div>
           </div>

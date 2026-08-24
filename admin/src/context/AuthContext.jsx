@@ -1,199 +1,154 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getStoredData, setStoredData, generateId } from '../utils/helpers'
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  updateProfile as fbUpdateProfile
+} from 'firebase/auth'
+import {
+  doc, getDoc, setDoc, updateDoc, deleteDoc,
+  collection, getDocs, query, orderBy, where,
+  writeBatch
+} from 'firebase/firestore'
+import { auth, db } from '../firebase'
 import productsData from '../data/products.json'
 import couponsData from '../data/coupons.json'
 
 const AuthContext = createContext()
 
-const STORAGE_KEY = 'styleverse_auth'
-const USERS_KEY = 'styleverse_users'
-const ORDERS_KEY = 'styleverse_orders'
-const PRODUCTS_KEY = 'styleverse_products'
-const COUPONS_KEY = 'styleverse_coupons'
+// ── One-time seed: products + coupons + admin account ─────────
+async function seedIfEmpty() {
+  try {
+    // Seed products
+    const prodSnap = await getDocs(collection(db, 'products'))
+    if (prodSnap.empty) {
+      const batch = writeBatch(db)
+      productsData.products.forEach(p => {
+        batch.set(doc(db, 'products', p.id), { ...p, createdAt: new Date().toISOString() })
+      })
+      await batch.commit()
+      console.log('✅ Products seeded')
+    }
 
-const ADMIN_EMAIL = 'admin@styleverse.com'
-const ADMIN_PASSWORD = 'admin123'
+    // Seed coupons
+    const couponSnap = await getDocs(collection(db, 'coupons'))
+    if (couponSnap.empty) {
+      const batch = writeBatch(db)
+      couponsData.coupons.forEach((c, i) => {
+        const id = `coupon-${i + 1}`
+        batch.set(doc(db, 'coupons', id), { ...c, id, isActive: true })
+      })
+      await batch.commit()
+      console.log('✅ Coupons seeded')
+    }
 
-function seedAdmin() {
-  const users = getStoredData(USERS_KEY, [])
-  const adminExists = users.find(u => u.email === ADMIN_EMAIL)
-  if (!adminExists) {
-    users.unshift({
-      id: 'admin-001',
-      name: 'Admin',
-      email: ADMIN_EMAIL,
-      phone: '9999999999',
-      password: ADMIN_PASSWORD,
-      isAdmin: true,
-      addresses: [],
-      createdAt: new Date('2025-01-01').toISOString()
-    })
-    setStoredData(USERS_KEY, users)
+    // Seed admin user in Firestore (Firebase Auth account must exist)
+    const adminDoc = await getDoc(doc(db, 'users', 'admin-001'))
+    if (!adminDoc.exists()) {
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, 'admin@styleverse.com', 'admin123')
+        await fbUpdateProfile(cred.user, { displayName: 'Admin' })
+        await setDoc(doc(db, 'users', cred.user.uid), {
+          name: 'Admin',
+          email: 'admin@styleverse.com',
+          phone: '9999999999',
+          isAdmin: true,
+          addresses: [],
+          createdAt: new Date().toISOString()
+        })
+        console.log('✅ Admin account created')
+      } catch (e) {
+        // Admin account already exists in Firebase Auth — that's fine
+        if (e.code !== 'auth/email-already-in-use') {
+          console.warn('Admin seed error:', e)
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Seed error:', e)
   }
 }
 
-function seedProducts() {
-  const existing = getStoredData(PRODUCTS_KEY, null)
-  if (!existing) {
-    setStoredData(PRODUCTS_KEY, productsData.products)
-  }
-}
-
-function seedCoupons() {
-  const existing = getStoredData(COUPONS_KEY, null)
-  if (!existing) {
-    const seeded = couponsData.coupons.map((c, i) => ({ ...c, id: `coupon-${i + 1}` }))
-    setStoredData(COUPONS_KEY, seeded)
-  }
-}
-
-// Run seeds once at module load
-seedAdmin()
-seedProducts()
-seedCoupons()
+seedIfEmpty()
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const saved = getStoredData(STORAGE_KEY)
-    if (saved) setUser(saved)
-    setIsLoading(false)
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
+        if (userDoc.exists()) {
+          const data = userDoc.data()
+          // Only allow admin users into admin panel
+          if (data.isAdmin) {
+            setUser({ uid: firebaseUser.uid, ...data })
+          } else {
+            await signOut(auth)
+            setUser(null)
+          }
+        } else {
+          setUser({ uid: firebaseUser.uid, email: firebaseUser.email })
+        }
+      } else {
+        setUser(null)
+      }
+      setIsLoading(false)
+    })
+    return unsub
   }, [])
 
-  useEffect(() => {
-    if (user) {
-      setStoredData(STORAGE_KEY, user)
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  }, [user])
-
-  const signup = (name, email, phone, password) => {
-    const users = getStoredData(USERS_KEY, [])
-    const exists = users.find(u => u.email === email)
-    if (exists) {
-      return { success: false, message: 'Email already registered' }
-    }
-
-    const newUser = {
-      id: generateId(),
-      name,
-      email,
-      phone,
-      password,
-      isAdmin: false,
-      addresses: [],
-      createdAt: new Date().toISOString()
-    }
-
-    users.push(newUser)
-    setStoredData(USERS_KEY, users)
-
-    const { password: _, ...safeUser } = newUser
-    setUser(safeUser)
-    return { success: true }
-  }
-
-  const login = (email, password) => {
-    const users = getStoredData(USERS_KEY, [])
-    const found = users.find(u => u.email === email && u.password === password)
-    if (!found) {
+  // ── Auth ──────────────────────────────────────────────────────
+  const login = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      return { success: true }
+    } catch (e) {
       return { success: false, message: 'Invalid email or password' }
     }
-
-    const { password: _, ...safeUser } = found
-    setUser(safeUser)
-    return { success: true }
   }
 
-  const logout = () => {
+  const logout = async () => {
+    await signOut(auth)
     setUser(null)
   }
 
-  const updateProfile = (updates) => {
-    const users = getStoredData(USERS_KEY, [])
-    const index = users.findIndex(u => u.id === user.id)
-    if (index !== -1) {
-      users[index] = { ...users[index], ...updates }
-      setStoredData(USERS_KEY, users)
-    }
-    setUser(prev => ({ ...prev, ...updates }))
+  // ── Orders ────────────────────────────────────────────────────
+  const getAllOrders = async () => {
+    const snap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')))
+    return snap.docs.map(d => d.data())
   }
 
-  const addAddress = (address) => {
-    const newAddress = { ...address, id: generateId() }
-    const updatedAddresses = [...(user.addresses || []), newAddress]
-    updateProfile({ addresses: updatedAddresses })
+  const getOrderById = async (orderId) => {
+    const snap = await getDoc(doc(db, 'orders', orderId))
+    return snap.exists() ? snap.data() : null
   }
 
-  const removeAddress = (addressId) => {
-    const updatedAddresses = (user.addresses || []).filter(a => a.id !== addressId)
-    updateProfile({ addresses: updatedAddresses })
+  const updateOrderStatus = async (orderId, status) => {
+    const orderRef = doc(db, 'orders', orderId)
+    const snap = await getDoc(orderRef)
+    if (!snap.exists()) return
+    const order = snap.data()
+    const history = [...(order.statusHistory || []), { status, date: new Date().toISOString() }]
+    await updateDoc(orderRef, { status, statusHistory: history })
   }
 
-  // ── Order management ──────────────────────────────────────────
-  const placeOrder = (orderData) => {
-    const orders = getStoredData(ORDERS_KEY, [])
-    const newOrder = {
-      id: 'ORD' + Date.now().toString().slice(-8),
-      userId: user?.id || 'guest',
-      userName: user?.name || 'Guest',
-      userEmail: user?.email || '',
-      ...orderData,
-      status: 'confirmed',
-      statusHistory: [
-        { status: 'placed', date: new Date().toISOString() },
-        { status: 'confirmed', date: new Date().toISOString() }
-      ],
-      createdAt: new Date().toISOString(),
-      estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
-    }
-    orders.push(newOrder)
-    setStoredData(ORDERS_KEY, orders)
-    return newOrder
+  const deleteOrder = async (orderId) => {
+    await deleteDoc(doc(db, 'orders', orderId))
   }
 
-  const getOrders = () => {
-    const orders = getStoredData(ORDERS_KEY, [])
-    return orders.filter(o => o.userId === user?.id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  // ── Products ──────────────────────────────────────────────────
+  const getProducts = async () => {
+    const snap = await getDocs(collection(db, 'products'))
+    return snap.docs.map(d => d.data())
   }
 
-  const getOrderById = (orderId) => {
-    const orders = getStoredData(ORDERS_KEY, [])
-    return orders.find(o => o.id === orderId)
-  }
-
-  const getAllOrders = () => {
-    return getStoredData(ORDERS_KEY, []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-  }
-
-  const updateOrderStatus = (orderId, status) => {
-    const orders = getStoredData(ORDERS_KEY, [])
-    const index = orders.findIndex(o => o.id === orderId)
-    if (index !== -1) {
-      orders[index].status = status
-      orders[index].statusHistory = orders[index].statusHistory || []
-      orders[index].statusHistory.push({ status, date: new Date().toISOString() })
-      setStoredData(ORDERS_KEY, orders)
-    }
-  }
-
-  const deleteOrder = (orderId) => {
-    const orders = getStoredData(ORDERS_KEY, [])
-    setStoredData(ORDERS_KEY, orders.filter(o => o.id !== orderId))
-  }
-
-  // ── Product management (admin) ────────────────────────────────
-  const getProducts = () => {
-    return getStoredData(PRODUCTS_KEY, productsData.products)
-  }
-
-  const addProduct = (productData) => {
-    const products = getStoredData(PRODUCTS_KEY, productsData.products)
+  const addProduct = async (productData) => {
+    const id = 'p' + Date.now().toString().slice(-6)
     const newProduct = {
-      id: 'p' + Date.now().toString().slice(-6),
+      id,
       rating: 0,
       reviewCount: 0,
       isNew: true,
@@ -203,79 +158,66 @@ export function AuthProvider({ children }) {
       ...productData,
       createdAt: new Date().toISOString()
     }
-    products.unshift(newProduct)
-    setStoredData(PRODUCTS_KEY, products)
+    await setDoc(doc(db, 'products', id), newProduct)
     return newProduct
   }
 
-  const updateProduct = (productId, updates) => {
-    const products = getStoredData(PRODUCTS_KEY, productsData.products)
-    const index = products.findIndex(p => p.id === productId)
-    if (index !== -1) {
-      products[index] = { ...products[index], ...updates }
-      setStoredData(PRODUCTS_KEY, products)
-      return products[index]
-    }
-    return null
+  const updateProduct = async (productId, updates) => {
+    await updateDoc(doc(db, 'products', productId), updates)
   }
 
-  const deleteProduct = (productId) => {
-    const products = getStoredData(PRODUCTS_KEY, productsData.products)
-    setStoredData(PRODUCTS_KEY, products.filter(p => p.id !== productId))
+  const deleteProduct = async (productId) => {
+    await deleteDoc(doc(db, 'products', productId))
   }
 
-  const toggleProductStock = (productId) => {
-    const products = getStoredData(PRODUCTS_KEY, productsData.products)
-    const index = products.findIndex(p => p.id === productId)
-    if (index !== -1) {
-      products[index].inStock = !products[index].inStock
-      setStoredData(PRODUCTS_KEY, products)
-      return products[index].inStock
-    }
-    return null
+  const toggleProductStock = async (productId) => {
+    const ref = doc(db, 'products', productId)
+    const snap = await getDoc(ref)
+    if (!snap.exists()) return null
+    const newStock = !snap.data().inStock
+    await updateDoc(ref, { inStock: newStock })
+    return newStock
   }
 
-  // ── User management (admin) ───────────────────────────────────
-  const getAllUsers = () => {
-    return getStoredData(USERS_KEY, [])
+  // ── Users ─────────────────────────────────────────────────────
+  const getAllUsers = async () => {
+    const snap = await getDocs(query(collection(db, 'users'), orderBy('createdAt', 'desc')))
+    return snap.docs
+      .map(d => ({ uid: d.id, ...d.data() }))
       .filter(u => !u.isAdmin)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
 
-  const deleteUser = (userId) => {
-    const users = getStoredData(USERS_KEY, [])
-    setStoredData(USERS_KEY, users.filter(u => u.id !== userId))
+  const deleteUser = async (userId) => {
+    await deleteDoc(doc(db, 'users', userId))
   }
 
-  // ── Coupon management (admin) ─────────────────────────────────
-  const getCoupons = () => {
-    return getStoredData(COUPONS_KEY, [])
+  // ── Coupons ───────────────────────────────────────────────────
+  const getCoupons = async () => {
+    const snap = await getDocs(collection(db, 'coupons'))
+    return snap.docs.map(d => d.data())
   }
 
-  const addCoupon = (couponData) => {
-    const coupons = getStoredData(COUPONS_KEY, [])
+  const addCoupon = async (couponData) => {
+    const id = 'coupon-' + Date.now()
     const newCoupon = {
-      id: 'coupon-' + Date.now(),
+      id,
       isActive: true,
       ...couponData,
       code: couponData.code.toUpperCase().trim()
     }
-    coupons.unshift(newCoupon)
-    setStoredData(COUPONS_KEY, coupons)
+    await setDoc(doc(db, 'coupons', id), newCoupon)
     return newCoupon
   }
 
-  const deleteCoupon = (couponId) => {
-    const coupons = getStoredData(COUPONS_KEY, [])
-    setStoredData(COUPONS_KEY, coupons.filter(c => c.id !== couponId))
+  const deleteCoupon = async (couponId) => {
+    await deleteDoc(doc(db, 'coupons', couponId))
   }
 
-  const toggleCoupon = (couponId) => {
-    const coupons = getStoredData(COUPONS_KEY, [])
-    const index = coupons.findIndex(c => c.id === couponId)
-    if (index !== -1) {
-      coupons[index].isActive = !coupons[index].isActive
-      setStoredData(COUPONS_KEY, coupons)
+  const toggleCoupon = async (couponId) => {
+    const ref = doc(db, 'coupons', couponId)
+    const snap = await getDoc(ref)
+    if (snap.exists()) {
+      await updateDoc(ref, { isActive: !snap.data().isActive })
     }
   }
 
@@ -285,16 +227,10 @@ export function AuthProvider({ children }) {
       isAuthenticated: !!user,
       isAdmin: !!user?.isAdmin,
       isLoading,
-      signup,
       login,
       logout,
-      updateProfile,
-      addAddress,
-      removeAddress,
-      placeOrder,
-      getOrders,
-      getOrderById,
       getAllOrders,
+      getOrderById,
       updateOrderStatus,
       deleteOrder,
       getProducts,

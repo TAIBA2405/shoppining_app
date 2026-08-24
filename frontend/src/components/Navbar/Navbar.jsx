@@ -92,7 +92,7 @@ export default function Navbar() {
           <div className="navbar-links">
             {categoriesData.categories.map(cat => (
               <div key={cat.id} className="nav-link has-mega">
-                <Link to={`/category/${cat.id}`} style={{color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                <Link to={`/category/${cat.id}`} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   {cat.name}
                   <ChevronDown size={14} />
                 </Link>
@@ -114,7 +114,7 @@ export default function Navbar() {
                 </div>
               </div>
             ))}
-            <Link to="/category/all" className="nav-link" style={{textDecoration: 'none'}}>All Products</Link>
+            <Link to="/category/all" className="nav-link" style={{ textDecoration: 'none' }}>All Products</Link>
           </div>
 
           {/* Search Bar */}

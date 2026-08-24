@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { Package, CheckCircle, Truck, Home, ArrowLeft } from 'lucide-react'
@@ -5,16 +6,32 @@ import { useAuth } from '../../context/AuthContext'
 import { formatPrice } from '../../utils/helpers'
 
 const steps = [
-  { key: 'placed', label: 'Order Placed', icon: Package },
-  { key: 'confirmed', label: 'Confirmed', icon: CheckCircle },
-  { key: 'shipped', label: 'Shipped', icon: Truck },
-  { key: 'delivered', label: 'Delivered', icon: Home }
+  { key: 'placed',    label: 'Order Placed', icon: Package },
+  { key: 'confirmed', label: 'Confirmed',    icon: CheckCircle },
+  { key: 'shipped',   label: 'Shipped',      icon: Truck },
+  { key: 'delivered', label: 'Delivered',    icon: Home }
 ]
 
 export default function OrderTracking() {
   const { orderId } = useParams()
   const { getOrderById } = useAuth()
-  const order = getOrderById(orderId)
+  const [order, setOrder] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getOrderById(orderId).then(data => {
+      setOrder(data)
+      setLoading(false)
+    })
+  }, [orderId])
+
+  if (loading) {
+    return (
+      <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div style={{ color: 'var(--text-tertiary)' }}>Loading order...</div>
+      </div>
+    )
+  }
 
   if (!order) {
     return (
@@ -40,7 +57,6 @@ export default function OrderTracking() {
         {/* Progress Steps */}
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8)', marginBottom: 'var(--space-6)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
-            {/* Progress Line */}
             <div style={{ position: 'absolute', top: 22, left: '10%', right: '10%', height: 3, background: 'var(--bg-tertiary)', borderRadius: 2 }}>
               <motion.div
                 style={{ height: '100%', background: 'var(--color-primary)', borderRadius: 2 }}
@@ -49,27 +65,21 @@ export default function OrderTracking() {
                 transition={{ duration: 0.8, ease: 'easeOut' }}
               />
             </div>
-
             {steps.map((step, i) => {
               const isActive = i <= currentStepIndex
               const isCurrent = i === currentStepIndex
               const Icon = step.icon
               const historyEntry = order.statusHistory?.find(h => h.status === step.key)
               return (
-                <motion.div
-                  key={step.key}
+                <motion.div key={step.key}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1, flex: 1 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.15 }}
-                >
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.15 }}>
                   <div style={{
                     width: 44, height: 44, borderRadius: '50%',
                     background: isActive ? 'var(--color-primary)' : 'var(--bg-tertiary)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: isActive ? 'var(--text-inverse)' : 'var(--text-tertiary)',
-                    boxShadow: isCurrent ? 'var(--shadow-gold)' : 'none',
-                    transition: 'all 0.3s'
+                    boxShadow: isCurrent ? 'var(--shadow-gold)' : 'none', transition: 'all 0.3s'
                   }}>
                     <Icon size={20} />
                   </div>
@@ -93,7 +103,7 @@ export default function OrderTracking() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', fontSize: 'var(--text-sm)' }}>
             {order.items?.map((item, i) => (
               <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: 'var(--space-2) 0', borderBottom: '1px solid var(--border-color)' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>{item.name} × {item.quantity}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{item.name} &times; {item.quantity}</span>
                 <span>{formatPrice(item.price * item.quantity)}</span>
               </div>
             ))}
@@ -104,7 +114,11 @@ export default function OrderTracking() {
           </div>
           <div style={{ marginTop: 'var(--space-5)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>
             <p><strong>Payment:</strong> {order.paymentMethod?.toUpperCase()}</p>
-            {order.address && <p style={{ marginTop: 'var(--space-2)' }}><strong>Address:</strong> {order.address.line1}, {order.address.city}, {order.address.state} - {order.address.pincode}</p>}
+            {order.address && (
+              <p style={{ marginTop: 'var(--space-2)' }}>
+                <strong>Address:</strong> {order.address.line1}, {order.address.city}, {order.address.state} - {order.address.pincode}
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -12,15 +12,21 @@ export default function StockPage() {
   const [search, setSearch] = useState('')
   const [showOutOnly, setShowOutOnly] = useState(false)
   const [toggling, setToggling] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { setProducts(getProducts()) }, [])
-  const refresh = () => setProducts(getProducts())
+  useEffect(() => {
+    getProducts().then(data => {
+      setProducts(data)
+      setLoading(false)
+    })
+  }, [])
+
+  const refresh = () => getProducts().then(setProducts)
 
   const handleToggle = async (product) => {
     setToggling(product.id)
-    await new Promise(r => setTimeout(r, 300))
-    const newState = toggleProductStock(product.id)
-    refresh()
+    const newState = await toggleProductStock(product.id)
+    await refresh()
     setToggling(null)
     toast.success(`"${product.name}" is now ${newState ? 'In Stock' : 'Out of Stock'}`)
   }
@@ -33,8 +39,13 @@ export default function StockPage() {
   const outOfStockCount = products.filter(p => !p.inStock).length
   const inStockCount = products.filter(p => p.inStock).length
 
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'var(--text-tertiary)' }}>
+      Loading stock...
+    </div>
+  )
+
   return (
-    <div id="admin-stock">
       {/* Header */}
       <div className="admin-page-header">
         <div>

@@ -15,13 +15,17 @@ export default function CustomerList() {
   const [expanded, setExpanded] = useState(null)
 
   useEffect(() => {
-    setCustomers(getAllUsers())
-    setOrders(getAllOrders())
+    Promise.all([getAllUsers(), getAllOrders()]).then(([u, o]) => {
+      setCustomers(u)
+      setOrders(o)
+    })
   }, [])
 
   const refresh = () => {
-    setCustomers(getAllUsers())
-    setOrders(getAllOrders())
+    Promise.all([getAllUsers(), getAllOrders()]).then(([u, o]) => {
+      setCustomers(u)
+      setOrders(o)
+    })
   }
 
   const getCustomerOrders = (userId) =>

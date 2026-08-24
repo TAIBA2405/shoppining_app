@@ -117,8 +117,8 @@ export default function ProductDetail() {
               <div className="star-rating">
                 {stars.map((star, i) => (
                   star === 'full' ? <Star key={i} size={16} fill="currentColor" /> :
-                  star === 'half' ? <StarHalf key={i} size={16} fill="currentColor" /> :
-                  <Star key={i} size={16} style={{ color: 'var(--text-tertiary)' }} />
+                    star === 'half' ? <StarHalf key={i} size={16} fill="currentColor" /> :
+                      <Star key={i} size={16} style={{ color: 'var(--text-tertiary)' }} />
                 ))}
               </div>
               <span>{product.rating}</span>
