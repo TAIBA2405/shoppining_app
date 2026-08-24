@@ -46,6 +46,7 @@ export default function StockPage() {
   )
 
   return (
+    <div id="admin-stock">
       {/* Header */}
       <div className="admin-page-header">
         <div>
