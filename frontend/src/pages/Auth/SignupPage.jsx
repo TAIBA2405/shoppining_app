@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { User, Mail, Phone, Lock, Eye, EyeOff } from 'lucide-react'
@@ -9,20 +9,31 @@ export default function SignupPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { signup } = useAuth()
+  const { signup, isAuthenticated } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
 
+  // Redirect when auth state updates after signup
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/account')
+    }
+  }, [isAuthenticated])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.email || !form.phone || !form.password) { toast.error('Please fill all fields'); return }
-    if (form.password.length < 6) { toast.error('Password must be at least 6 characters'); return }
+    if (!form.name || !form.email || !form.phone || !form.password) {
+      toast.error('Please fill all fields'); return
+    }
+    if (form.password.length < 6) {
+      toast.error('Password must be at least 6 characters'); return
+    }
     setLoading(true)
     const result = await signup(form.name, form.email, form.phone, form.password)
     setLoading(false)
     if (result.success) {
       toast.success('Account created! Welcome to StyleVerse 🎉')
-      navigate('/account')
+      // Navigation happens via useEffect when isAuthenticated becomes true
     } else {
       toast.error(result.message)
     }

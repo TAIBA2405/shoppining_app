@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
@@ -10,9 +10,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, isAuthenticated } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
+
+  // Redirect when auth state updates after login
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/account')
+    }
+  }, [isAuthenticated])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -22,7 +29,7 @@ export default function LoginPage() {
     setLoading(false)
     if (result.success) {
       toast.success('Welcome back! 🎉')
-      navigate('/account')
+      // Navigation happens via useEffect when isAuthenticated becomes true
     } else {
       toast.error(result.message)
     }
