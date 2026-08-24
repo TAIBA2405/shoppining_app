@@ -25,13 +25,18 @@ export default function LoginPage() {
     e.preventDefault()
     if (!email || !password) { toast.error('Please fill all fields'); return }
     setLoading(true)
-    const result = await login(email, password)
-    setLoading(false)
-    if (result.success) {
-      toast.success('Welcome back! 🎉')
-      // Navigation happens via useEffect when isAuthenticated becomes true
-    } else {
-      toast.error(result.message)
+    try {
+      const result = await login(email, password)
+      if (result.success) {
+        toast.success('Welcome back! 🎉')
+        setTimeout(() => navigate('/account'), 3000)
+      } else {
+        toast.error(result.message)
+        setLoading(false)
+      }
+    } catch (err) {
+      toast.error('Something went wrong. Please try again.')
+      setLoading(false)
     }
   }
 

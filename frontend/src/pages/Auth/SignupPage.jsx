@@ -29,13 +29,19 @@ export default function SignupPage() {
       toast.error('Password must be at least 6 characters'); return
     }
     setLoading(true)
-    const result = await signup(form.name, form.email, form.phone, form.password)
-    setLoading(false)
-    if (result.success) {
-      toast.success('Account created! Welcome to StyleVerse 🎉')
-      // Navigation happens via useEffect when isAuthenticated becomes true
-    } else {
-      toast.error(result.message)
+    try {
+      const result = await signup(form.name, form.email, form.phone, form.password)
+      if (result.success) {
+        toast.success('Account created! Welcome to StyleVerse 🎉')
+        // Give onAuthStateChanged 3 seconds to fire, then force navigate
+        setTimeout(() => navigate('/account'), 3000)
+      } else {
+        toast.error(result.message)
+        setLoading(false)
+      }
+    } catch (err) {
+      toast.error('Something went wrong. Please try again.')
+      setLoading(false)
     }
   }
 
