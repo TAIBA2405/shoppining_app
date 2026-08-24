@@ -40,35 +40,29 @@ export function AuthProvider({ children }) {
 
   // Listen to Firebase auth state
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
-          if (userDoc.exists()) {
-            setUser({ uid: firebaseUser.uid, ...userDoc.data() })
-          } else {
-            // Firestore doc doesn't exist yet — use Auth data
-            setUser({
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              name: firebaseUser.displayName || '',
-              isAdmin: false
-            })
-          }
-        } catch (e) {
-          // Firestore offline — still log user in with basic info
-          console.warn('Firestore unavailable, using auth data:', e)
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            name: firebaseUser.displayName || '',
-            isAdmin: false
+        // Set user immediately from Auth data — don't wait for Firestore
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: firebaseUser.displayName || '',
+          isAdmin: false
+        })
+        setIsLoading(false)
+
+        // Enrich with Firestore profile data in the background
+        getDoc(doc(db, 'users', firebaseUser.uid))
+          .then(userDoc => {
+            if (userDoc.exists()) {
+              setUser(prev => ({ ...prev, ...userDoc.data(), uid: firebaseUser.uid }))
+            }
           })
-        }
+          .catch(e => console.warn('Firestore profile fetch failed:', e))
       } else {
         setUser(null)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     })
     return unsub
   }, [])
@@ -86,12 +80,10 @@ export function AuthProvider({ children }) {
         addresses: [],
         createdAt: new Date().toISOString()
       }
-      // Try to write to Firestore — don't block signup if it fails
-      try {
-        await setDoc(doc(db, 'users', cred.user.uid), userData)
-      } catch (firestoreErr) {
-        console.warn('Firestore write failed but auth succeeded:', firestoreErr)
-      }
+      // Write to Firestore in background — don't await it
+      setDoc(doc(db, 'users', cred.user.uid), userData).catch(e =>
+        console.warn('Firestore write failed:', e)
+      )
       return { success: true }
     } catch (e) {
       console.error('Signup error:', e.code, e.message)
