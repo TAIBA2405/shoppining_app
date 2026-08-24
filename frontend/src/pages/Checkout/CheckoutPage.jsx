@@ -38,15 +38,21 @@ export default function CheckoutPage() {
     }
     if (step === 2) {
       setPlacing(true)
-      const order = await placeOrder({
-        items,
-        address,
-        paymentMethod,
-        utrNumber: paymentMethod === 'upi' ? utrNumber : null,
-        subtotal, shipping, coupon, couponDiscount, total
-      })
-      clearCart()
-      navigate(`/order-confirmation/${order.id}`)
+      try {
+        const order = await placeOrder({
+          items,
+          address,
+          paymentMethod,
+          utrNumber: paymentMethod === 'upi' ? utrNumber : null,
+          subtotal, shipping, coupon, couponDiscount, total
+        })
+        clearCart()
+        navigate(`/order-confirmation/${order.id}`)
+      } catch (err) {
+        console.error('Order placement failed:', err)
+        toast.error('Could not place order. Please try again.')
+        setPlacing(false)
+      }
     }
   }
 
