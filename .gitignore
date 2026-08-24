@@ -4,3 +4,7 @@ frontend/node_modules
 admin/node_modules
 dist
 */dist
+.env
+*/.env
+frontend/.env
+admin/.env
