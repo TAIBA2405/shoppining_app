@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,4 +13,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
-export const db = getFirestore(app)
+
+// Force long-polling — fixes "client is offline" errors on some
+// hosting/network setups where WebChannel streaming is blocked.
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED
+})
