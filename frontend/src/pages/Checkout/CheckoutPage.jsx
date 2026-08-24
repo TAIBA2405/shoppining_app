@@ -205,14 +205,17 @@ export default function CheckoutPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 'var(--text-lg)', borderTop: '1px solid var(--border-color)', paddingTop: 'var(--space-3)' }}><span>Total</span><span>{formatPrice(total)}</span></div>
             </div>
 
-            <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-5)' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-5)', flexWrap: 'wrap' }}>
               {step > 1 && (
-                <button className="btn btn-secondary" onClick={() => setStep(step - 1)}>
+                <button className="btn btn-secondary" onClick={() => setStep(step - 1)} style={{ fontSize: 'var(--text-xs)', padding: 'var(--space-3) var(--space-4)' }}>
                   <ArrowLeft size={16} /> Back
                 </button>
               )}
-              <button className="btn btn-primary btn-lg" onClick={handlePlaceOrder} style={{ flex: 1 }} disabled={placing}>
-                {placing ? 'Placing order...' : step === 1 ? 'Continue to Payment' : 'Place Order'} <ArrowRight size={18} />
+              <button className="btn btn-primary btn-lg" onClick={handlePlaceOrder}
+                style={{ flex: 1, minWidth: 0, fontSize: 'var(--text-xs)', padding: 'var(--space-3) var(--space-4)' }}
+                disabled={placing}>
+                {placing ? 'Placing...' : step === 1 ? 'Continue' : 'Place Order'}
+                {!placing && <ArrowRight size={16} />}
               </button>
             </div>
           </div>
