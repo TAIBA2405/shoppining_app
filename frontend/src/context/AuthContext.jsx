@@ -73,11 +73,18 @@ export function AuthProvider({ children }) {
       await setDoc(doc(db, 'users', cred.user.uid), userData)
       return { success: true }
     } catch (e) {
+      console.error('Signup error:', e.code, e.message)
       const msg = e.code === 'auth/email-already-in-use'
         ? 'Email already registered'
         : e.code === 'auth/weak-password'
           ? 'Password must be at least 6 characters'
-          : 'Signup failed. Please try again.'
+          : e.code === 'auth/invalid-email'
+          ? 'Invalid email address'
+          : e.code === 'auth/operation-not-allowed'
+          ? 'Email signup is not enabled'
+          : e.code === 'auth/network-request-failed'
+          ? 'Network error. Check your connection.'
+          : `Signup failed: ${e.message}`
       return { success: false, message: msg }
     }
   }
