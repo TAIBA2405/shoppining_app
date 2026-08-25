@@ -1,2 +1,10 @@
 {
+  "claudeCode.environmentVariables": [
+    { "name": "ANTHROPIC_AUTH_TOKEN", "value": "你的 API Key" },
+    { "name": "ANTHROPIC_BASE_URL", "value": "https://agentrouter.org" },
+    { "name": "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY", "value": "1" },
+    { "name": "ANTHROPIC_MODEL", "value": "claude-opus-4-8" }
+  ],
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.initialPermissionMode": "acceptEdits"
 }

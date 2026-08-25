@@ -11,12 +11,20 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
+// Diagnostic: warn if any config value is missing (env vars not set on host)
+if (!firebaseConfig.projectId || !firebaseConfig.apiKey) {
+  console.error('⚠️ Firebase config missing! Env vars not loaded:', {
+    hasApiKey: !!firebaseConfig.apiKey,
+    hasProjectId: !!firebaseConfig.projectId,
+    projectId: firebaseConfig.projectId
+  })
+}
+
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
-// Force long-polling (not auto-detect) — the most reliable fix for
-// "client is offline" errors caused by blocked WebChannel streaming.
+// Force long-polling to fix "client is offline" errors on hosted
+// environments where WebChannel streaming is blocked.
 export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-  useFetchStreams: false
+  experimentalForceLongPolling: true
 })

@@ -14,9 +14,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
-// Force long-polling (not auto-detect) — the most reliable fix for
-// "client is offline" errors caused by blocked WebChannel streaming.
+// Force long-polling to fix "client is offline" errors on hosted
+// environments where WebChannel streaming is blocked.
 export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-  useFetchStreams: false
+  experimentalForceLongPolling: true
 })
