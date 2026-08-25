@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { initializeFirestore } from 'firebase/firestore'
+import { initializeFirestore, enableNetwork } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,8 +15,7 @@ const firebaseConfig = {
 if (!firebaseConfig.projectId || !firebaseConfig.apiKey) {
   console.error('⚠️ Firebase config missing! Env vars not loaded:', {
     hasApiKey: !!firebaseConfig.apiKey,
-    hasProjectId: !!firebaseConfig.projectId,
-    projectId: firebaseConfig.projectId
+    hasProjectId: !!firebaseConfig.projectId
   })
 }
 
@@ -28,3 +27,6 @@ export const auth = getAuth(app)
 export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true
 })
+
+// Explicitly ensure Firestore network is enabled
+enableNetwork(db).catch(e => console.warn('enableNetwork failed:', e))
