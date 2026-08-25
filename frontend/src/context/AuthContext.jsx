@@ -150,7 +150,12 @@ export function AuthProvider({ children }) {
       createdAt: new Date().toISOString(),
       estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
     }
-    await setDoc(doc(db, 'orders', orderId), newOrder)
+    // Write to Firestore but don't let a slow/blocked connection hang the UI.
+    // The order object is returned immediately; the write completes in the
+    // background (Firestore queues it and syncs when the connection is ready).
+    setDoc(doc(db, 'orders', orderId), newOrder).catch(e =>
+      console.warn('Order write pending/failed:', e)
+    )
     return newOrder
   }
 
