@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, Save, Plus, X, Image } from 'lucide-react'
+import { ArrowLeft, Save, Plus, X, Image, Upload, Loader2 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { formatPrice } from '../../utils/helpers'
+import { uploadImage, isCloudinaryConfigured } from '../../lib/cloudinary'
 
 const CATEGORIES = ['men', 'women', 'kids']
 const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '26', '28', '30', '32', '34', '36', '38', 'Free Size']
@@ -33,6 +34,10 @@ export default function ProductForm() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
+  const [uploadingIndex, setUploadingIndex] = useState(null)
+  const fileInputRef = useRef(null)
+  const uploadTargetRef = useRef(0)
+  const canUpload = isCloudinaryConfigured()
 
   // Load existing product for edit
   useEffect(() => {
@@ -72,6 +77,33 @@ export default function ProductForm() {
     set('images', imgs)
   }
   const removeImage = (i) => set('images', form.images.filter((_, idx) => idx !== i))
+
+  // Upload a file from disk → Cloudinary → fills the URL slot
+  const openFilePicker = (i) => {
+    uploadTargetRef.current = i
+    fileInputRef.current?.click()
+  }
+
+  const handleFilePicked = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow picking the same file twice
+    if (!file) return
+    const i = uploadTargetRef.current
+    setUploadingIndex(i)
+    try {
+      const url = await uploadImage(file)
+      const imgs = [...form.images]
+      imgs[i] = url
+      // keep an empty slot at the end so the user can add more
+      if (i === imgs.length - 1) imgs.push('')
+      set('images', imgs)
+      toast.success('Image uploaded!')
+    } catch (err) {
+      toast.error(err.message || 'Upload failed')
+    } finally {
+      setUploadingIndex(null)
+    }
+  }
 
   const validate = () => {
     const e = {}
@@ -257,29 +289,64 @@ export default function ProductForm() {
           <div className="admin-card" style={{ padding: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Images</div>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={addImageUrl} style={{ fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Plus size={12} /> Add URL
-              </button>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {canUpload && (
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => openFilePicker(form.images.length - 1)} style={{ fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Upload size={12} /> Upload
+                  </button>
+                )}
+                <button type="button" className="btn btn-ghost btn-sm" onClick={addImageUrl} style={{ fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Plus size={12} /> Add URL
+                </button>
+              </div>
             </div>
+            {!canUpload && (
+              <div style={{ marginBottom: 12, padding: '8px 12px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>
+                💡 Tip: add Cloudinary keys in <code>admin/.env</code> to enable direct image uploads.
+              </div>
+            )}
+            {/* Hidden file picker for uploads */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleFilePicked}
+            />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {form.images.map((img, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  {img.trim() && (
+                  {uploadingIndex === i ? (
+                    <div style={{ width: 36, height: 44, borderRadius: 6, background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Loader2 size={14} style={{ animation: 'spin 0.8s linear infinite' }} />
+                    </div>
+                  ) : img.trim() ? (
                     <img src={img} alt="" style={{ width: 36, height: 44, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }}
                       onError={e => e.target.style.display = 'none'} />
-                  )}
-                  {!img.trim() && (
+                  ) : (
                     <div style={{ width: 36, height: 44, borderRadius: 6, background: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <Image size={14} color="var(--text-tertiary)" />
                     </div>
                   )}
                   <input
                     className="admin-form-input"
-                    placeholder={`Image URL ${i + 1}`}
-                    value={img}
+                    placeholder={`Image URL ${i + 1} — or upload`}
+                    value={uploadingIndex === i ? 'Uploading...' : img}
+                    disabled={uploadingIndex === i}
                     onChange={e => setImageUrl(i, e.target.value)}
                     style={{ flex: 1 }}
                   />
+                  {canUpload && (
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => openFilePicker(i)}
+                      disabled={uploadingIndex !== null}
+                      title="Upload image from your device"
+                    >
+                      <Upload size={14} />
+                    </button>
+                  )}
                   {form.images.length > 1 && (
                     <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeImage(i)}>
                       <X size={14} />
