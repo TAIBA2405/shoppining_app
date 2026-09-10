@@ -15,20 +15,27 @@ export default function StockPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getProducts().then(data => {
-      setProducts(data)
-      setLoading(false)
-    })
-  }, [])
+    getProducts()
+      .then(data => {
+        setProducts(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [getProducts])
 
-  const refresh = () => getProducts().then(setProducts)
+  const refresh = () => getProducts().then(setProducts).catch(() => {})
 
   const handleToggle = async (product) => {
     setToggling(product.id)
-    const newState = await toggleProductStock(product.id)
-    await refresh()
-    setToggling(null)
-    toast.success(`"${product.name}" is now ${newState ? 'In Stock' : 'Out of Stock'}`)
+    try {
+      const newState = await toggleProductStock(product.id)
+      await refresh()
+      toast.success(`"${product.name}" is now ${newState ? 'In Stock' : 'Out of Stock'}`)
+    } catch (e) {
+      toast.error(e.message || 'Toggle failed')
+    } finally {
+      setToggling(null)
+    }
   }
 
   const filtered = products.filter(p => {

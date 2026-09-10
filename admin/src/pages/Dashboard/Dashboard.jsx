@@ -74,13 +74,15 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([getAllOrders(), getProducts(), getAllUsers()]).then(([o, p, u]) => {
-      setOrders(o)
-      setProducts(p)
-      setUsers(u)
-      setLoading(false)
-    })
-  }, [])
+    Promise.all([getAllOrders(), getProducts(), getAllUsers()])
+      .then(([o, p, u]) => {
+        setOrders(o)
+        setProducts(p)
+        setUsers(u)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [getAllOrders, getProducts, getAllUsers])
 
   const totalRevenue = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
   const pendingOrders = orders.filter(o => ['placed', 'confirmed'].includes(o.status)).length

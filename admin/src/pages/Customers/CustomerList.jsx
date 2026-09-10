@@ -15,11 +15,13 @@ export default function CustomerList() {
   const [expanded, setExpanded] = useState(null)
 
   useEffect(() => {
-    Promise.all([getAllUsers(), getAllOrders()]).then(([u, o]) => {
-      setCustomers(u)
-      setOrders(o)
-    })
-  }, [])
+    Promise.all([getAllUsers(), getAllOrders()])
+      .then(([u, o]) => {
+        setCustomers(u)
+        setOrders(o)
+      })
+      .catch(() => {})
+  }, [getAllUsers, getAllOrders])
 
   const refresh = () => {
     Promise.all([getAllUsers(), getAllOrders()]).then(([u, o]) => {
@@ -37,10 +39,14 @@ export default function CustomerList() {
     return { orderCount: customerOrders.length, revenue }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return
-    deleteUser(deleteTarget.id)
-    toast.success(`Customer "${deleteTarget.name}" removed`)
+    try {
+      await deleteUser(deleteTarget.id)
+      toast.success(`Customer "${deleteTarget.name}" removed`)
+    } catch (e) {
+      toast.error(e.message || 'Delete failed')
+    }
     setDeleteTarget(null)
     refresh()
   }

@@ -38,22 +38,32 @@ export default function OrderList() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const refresh = () => getAllOrders().then(setOrders)
+  const refresh = () => getAllOrders().then(setOrders).catch(() => {})
 
   useEffect(() => {
-    getAllOrders().then(data => { setOrders(data); setLoading(false) })
-  }, [])
+    getAllOrders()
+      .then(data => { setOrders(data); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [getAllOrders])
 
   const handleStatus = async (orderId, status) => {
-    await updateOrderStatus(orderId, status)
-    toast.success(`Order updated to ${status}`)
-    refresh()
+    try {
+      await updateOrderStatus(orderId, status)
+      toast.success(`Order updated to ${status}`)
+      refresh()
+    } catch (e) {
+      toast.error(e.message || 'Status update failed')
+    }
   }
 
   const handleDelete = async () => {
     if (!deleteTarget) return
-    await deleteOrder(deleteTarget.id)
-    toast.success('Order deleted')
+    try {
+      await deleteOrder(deleteTarget.id)
+      toast.success('Order deleted')
+    } catch (e) {
+      toast.error(e.message || 'Delete failed')
+    }
     setDeleteTarget(null)
     refresh()
   }

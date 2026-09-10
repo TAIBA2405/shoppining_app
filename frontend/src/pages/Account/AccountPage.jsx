@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext'
 import { formatPrice } from '../../utils/helpers'
 
 export default function AccountPage() {
-  const { user, isAuthenticated, logout, getOrders } = useAuth()
+  const { user, isAuthenticated, isGuest, logout, getOrders } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
   const [tab, setTab] = useState(window.location.pathname.includes('orders') ? 'orders' : 'profile')
@@ -14,16 +14,18 @@ export default function AccountPage() {
   const [loadingOrders, setLoadingOrders] = useState(false)
 
   useEffect(() => {
-    if (tab === 'orders' && isAuthenticated) {
+    if (tab === 'orders' && user) {
       setLoadingOrders(true)
-      getOrders().then(data => {
-        setOrders(data)
-        setLoadingOrders(false)
-      })
+      getOrders()
+        .then(data => {
+          setOrders(data)
+          setLoadingOrders(false)
+        })
+        .catch(() => setLoadingOrders(false))
     }
-  }, [tab, isAuthenticated])
+  }, [tab, user, getOrders])
 
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center' }}>
         <div>
@@ -104,6 +106,17 @@ export default function AccountPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {loadingOrders ? (
               <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-tertiary)' }}>Loading orders...</div>
+            ) : isGuest ? (
+              <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-secondary)' }}>
+                <ShoppingBag size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }} />
+                <h3>Order history needs an account</h3>
+                <p style={{ fontSize: 'var(--text-sm)', marginBottom: 'var(--space-4)' }}>
+                  You checked out as a guest. Track any order from its confirmation page or
+                  <Link to="/signup" style={{ color: 'var(--color-primary)', fontWeight: 600 }}> create an account </Link>
+                  for full history.
+                </p>
+                <Link to="/category/all" className="btn btn-primary" style={{ marginTop: 'var(--space-2)' }}>Start Shopping</Link>
+              </div>
             ) : orders.length === 0 ? (
               <div style={{ textAlign: 'center', padding: 'var(--space-12)', color: 'var(--text-secondary)' }}>
                 <ShoppingBag size={48} style={{ color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }} />

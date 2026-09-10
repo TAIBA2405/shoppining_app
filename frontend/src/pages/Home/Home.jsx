@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { ArrowRight, Truck, RotateCcw, Shield, Headphones, Star, Zap, MessageCircle } from 'lucide-react'
 import ProductCard from '../../components/ProductCard/ProductCard'
-import productsData from '../../data/products.json'
 import categoriesData from '../../data/categories.json'
 import bannersData from '../../data/banners.json'
+import { useAuth } from '../../context/AuthContext'
 import './Home.css'
 
 const iconMap = { Truck, RotateCcw, Shield, Headphones }
@@ -37,9 +37,15 @@ const testimonials = [
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [activeTab, setActiveTab] = useState('all')
+  const [allProducts, setAllProducts] = useState([])
+  const { getProducts } = useAuth()
   const navigate = useNavigate()
   const banners = bannersData.banners
   const categories = categoriesData.categories
+
+  useEffect(() => {
+    getProducts().then(setAllProducts).catch(() => setAllProducts([]))
+  }, [getProducts])
 
   // Auto-slide hero
   useEffect(() => {
@@ -65,7 +71,6 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [])
 
-  const allProducts = productsData.products
   const featuredProducts = useMemo(() => {
     if (activeTab === 'all') return allProducts.filter(p => p.isFeatured).slice(0, 8)
     return allProducts.filter(p => p.category === activeTab && p.isFeatured).slice(0, 8)

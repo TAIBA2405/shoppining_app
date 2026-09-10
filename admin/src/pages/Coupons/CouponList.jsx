@@ -28,22 +28,30 @@ export default function CouponList() {
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    setCoupons(getCoupons())
-  }, [])
+    getCoupons().then(setCoupons).catch(() => {})
+  }, [getCoupons])
 
-  const refresh = () => setCoupons(getCoupons())
+  const refresh = () => getCoupons().then(setCoupons).catch(() => {})
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
-  const handleToggle = (couponId, code) => {
-    toggleCoupon(couponId)
-    refresh()
-    toast.success(`Coupon ${code} toggled`)
+  const handleToggle = async (couponId, code) => {
+    try {
+      await toggleCoupon(couponId)
+      refresh()
+      toast.success(`Coupon ${code} toggled`)
+    } catch (e) {
+      toast.error(e.message || 'Toggle failed')
+    }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return
-    deleteCoupon(deleteTarget.id)
-    toast.success(`Coupon "${deleteTarget.code}" deleted`)
+    try {
+      await deleteCoupon(deleteTarget.id)
+      toast.success(`Coupon "${deleteTarget.code}" deleted`)
+    } catch (e) {
+      toast.error(e.message || 'Delete failed')
+    }
     setDeleteTarget(null)
     refresh()
   }
@@ -58,27 +66,31 @@ export default function CouponList() {
     return Object.keys(e).length === 0
   }
 
-  const handleAddCoupon = () => {
+  const handleAddCoupon = async () => {
     if (!validate()) return
     const existing = coupons.find(c => c.code === form.code.toUpperCase().trim())
     if (existing) {
       setErrors({ code: 'Coupon code already exists' })
       return
     }
-    addCoupon({
-      code: form.code,
-      description: form.description,
-      discountType: form.discountType,
-      discountValue: form.discountType !== 'shipping' ? Number(form.discountValue) : 0,
-      minOrder: form.minOrder ? Number(form.minOrder) : 0,
-      maxDiscount: form.maxDiscount ? Number(form.maxDiscount) : 0,
-      validTill: form.validTill || '2026-12-31',
-      isActive: form.isActive
-    })
-    toast.success(`Coupon "${form.code.toUpperCase()}" created!`)
-    setForm(EMPTY_FORM)
-    setShowForm(false)
-    refresh()
+    try {
+      await addCoupon({
+        code: form.code,
+        description: form.description,
+        discountType: form.discountType,
+        discountValue: form.discountType !== 'shipping' ? Number(form.discountValue) : 0,
+        minOrder: form.minOrder ? Number(form.minOrder) : 0,
+        maxDiscount: form.maxDiscount ? Number(form.maxDiscount) : 0,
+        validTill: form.validTill || '2026-12-31',
+        isActive: form.isActive
+      })
+      toast.success(`Coupon "${form.code.toUpperCase()}" created!`)
+      setForm(EMPTY_FORM)
+      setShowForm(false)
+      refresh()
+    } catch (e) {
+      toast.error(e.message || 'Create failed')
+    }
   }
 
   const activeCoupons = coupons.filter(c => c.isActive).length

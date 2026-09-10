@@ -19,11 +19,13 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getProducts().then(data => {
-      setProducts(data)
-      setLoading(false)
-    })
-  }, [])
+    getProducts()
+      .then(data => {
+        setProducts(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [getProducts])
 
   const refresh = () => getProducts().then(setProducts)
 
@@ -36,10 +38,14 @@ export default function ProductList() {
     return matchSearch && matchCat && matchStock
   })
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return
-    deleteProduct(deleteTarget.id)
-    toast.success(`"${deleteTarget.name}" deleted`)
+    try {
+      await deleteProduct(deleteTarget.id)
+      toast.success(`"${deleteTarget.name}" deleted`)
+    } catch (e) {
+      toast.error(e.message || 'Delete failed')
+    }
     setDeleteTarget(null)
     refresh()
   }
@@ -59,7 +65,7 @@ export default function ProductList() {
           <p className="admin-page-subtitle">{products.length} total &middot; {products.filter(p => !p.inStock).length} out of stock</p>
         </div>
         <div className="admin-page-header-actions">
-          <Link to="/admin/products/new" className="btn btn-primary btn-sm">
+          <Link to="/products/new" className="btn btn-primary btn-sm">
             <Plus size={16} /> Add Product
           </Link>
         </div>
@@ -150,7 +156,7 @@ export default function ProductList() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
-                        <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/admin/products/edit/${product.id}`)} title="Edit">
+                        <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/products/edit/${product.id}`)} title="Edit">
                           <Edit size={14} />
                         </button>
                         <button className="btn btn-ghost btn-sm" style={{ color: 'var(--color-error)' }} onClick={() => setDeleteTarget(product)} title="Delete">

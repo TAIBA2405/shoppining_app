@@ -5,7 +5,7 @@ import { useWishlist } from '../../context/WishlistContext'
 import { useCart } from '../../context/CartContext'
 import { useToast } from '../../context/ToastContext'
 import { formatPrice } from '../../utils/helpers'
-import productsData from '../../data/products.json'
+import { api } from '../../lib/api'
 
 export default function WishlistPage() {
   const { items, removeItem } = useWishlist()
@@ -23,12 +23,14 @@ export default function WishlistPage() {
     )
   }
 
-  const handleMoveToCart = (item) => {
-    const product = productsData.products.find(p => p.id === item.id)
-    if (product) {
+  const handleMoveToCart = async (item) => {
+    try {
+      const product = await api.getProduct(item.id)
       addItem(product, product.sizes[0], product.colors[0]?.name || 'Default')
       removeItem(item.id)
       toast.success('Moved to cart!')
+    } catch {
+      toast.error('Product is no longer available')
     }
   }
 

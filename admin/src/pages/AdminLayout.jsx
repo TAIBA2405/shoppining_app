@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { NavLink, Link, useNavigate, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard, Package, ShoppingBag, Layers, Users, Tag,
@@ -16,10 +16,15 @@ const NAV_ITEMS = [
 ]
 
 export default function AdminLayout() {
-  const { user, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, logout } = useAuth()
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  // No JWT → back to login. Runs after the session restore finishes.
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) navigate('/login', { replace: true })
+  }, [isLoading, isAuthenticated, navigate])
 
   const handleLogout = () => {
     logout()
@@ -27,6 +32,14 @@ export default function AdminLayout() {
   }
 
   const initials = (user?.name || 'A').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'var(--text-tertiary)' }}>
+        Loading admin...
+      </div>
+    )
+  }
 
   return (
     <div className="admin-shell" style={{ paddingTop: 0, overflowX: 'hidden' }}>

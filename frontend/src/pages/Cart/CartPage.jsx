@@ -4,16 +4,22 @@ import { Trash2, Minus, Plus, Tag, ArrowRight, ShoppingBag } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { useToast } from '../../context/ToastContext'
 import { formatPrice } from '../../utils/helpers'
-import couponsData from '../../data/coupons.json'
-import { useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
+import { useEffect, useState } from 'react'
 
 export default function CartPage() {
   const { items, subtotal, shipping, total, coupon, couponDiscount, itemCount, updateQuantity, removeItem, applyCoupon, removeCoupon } = useCart()
+  const { getCoupons } = useAuth()
   const toast = useToast()
   const [couponCode, setCouponCode] = useState('')
+  const [coupons, setCoupons] = useState([])
+
+  useEffect(() => {
+    getCoupons().then(setCoupons).catch(() => setCoupons([]))
+  }, [getCoupons])
 
   const handleApplyCoupon = () => {
-    const found = couponsData.coupons.find(c => c.code === couponCode.toUpperCase() && c.isActive)
+    const found = coupons.find(c => c.code === couponCode.toUpperCase() && c.isActive)
     if (!found) { toast.error('Invalid coupon code'); return }
     if (subtotal < found.minOrder) { toast.error(`Minimum order ₹${found.minOrder} required`); return }
     let discount = 0

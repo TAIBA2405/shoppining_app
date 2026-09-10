@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { Heart, ShoppingBag, Star, StarHalf, Minus, Plus, ChevronRight, MessageCircle, Share2 } from 'lucide-react'
@@ -7,12 +7,23 @@ import { useWishlist } from '../../context/WishlistContext'
 import { useToast } from '../../context/ToastContext'
 import { formatPrice, getStars, getWhatsAppLink } from '../../utils/helpers'
 import ProductCard from '../../components/ProductCard/ProductCard'
-import productsData from '../../data/products.json'
+import { useAuth } from '../../context/AuthContext'
 import './ProductDetail.css'
 
 export default function ProductDetail() {
   const { productId } = useParams()
-  const product = productsData.products.find(p => p.id === productId)
+  const { getProducts } = useAuth()
+  const [catalog, setCatalog] = useState([])
+  const [loadingCatalog, setLoadingCatalog] = useState(true)
+
+  useEffect(() => {
+    getProducts()
+      .then(setCatalog)
+      .catch(() => setCatalog([]))
+      .finally(() => setLoadingCatalog(false))
+  }, [getProducts])
+
+  const product = catalog.find(p => p.id === productId)
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
@@ -24,10 +35,18 @@ export default function ProductDetail() {
 
   const relatedProducts = useMemo(() => {
     if (!product) return []
-    return productsData.products
+    return catalog
       .filter(p => p.category === product.category && p.id !== product.id)
       .slice(0, 4)
-  }, [product])
+  }, [product, catalog])
+
+  if (loadingCatalog) {
+    return (
+      <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div style={{ color: 'var(--text-tertiary)' }}>Loading product...</div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (

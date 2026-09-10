@@ -52,7 +52,7 @@ export default function ProductForm() {
         }
       })
     }
-  }, [productId])
+  }, [productId, isEdit, getProducts])
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
@@ -106,15 +106,21 @@ export default function ProductForm() {
       tags: form.tags.split(',').map(t => t.trim()).filter(Boolean)
     }
 
-    if (isEdit) {
-      await updateProduct(productId, data)
-      toast.success('Product updated successfully!')
-    } else {
-      await addProduct(data)
-      toast.success('Product added successfully!')
+    try {
+      if (isEdit) {
+        await updateProduct(productId, data)
+        toast.success('Product updated successfully!')
+      } else {
+        await addProduct(data)
+        toast.success('Product added successfully!')
+      }
+      navigate('/products')
+    } catch (e) {
+      // 401 = session expired, 403 = not an admin, else validation/DB error
+      toast.error(e.message || 'Save failed. Please try again.')
+    } finally {
+      setSaving(false)
     }
-    setSaving(false)
-    navigate('/products')
   }
 
   // Preview
@@ -127,7 +133,7 @@ export default function ProductForm() {
       {/* Header */}
       <div className="admin-page-header">
         <div>
-          <Link to="/admin/products" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)', textDecoration: 'none', marginBottom: 8 }}>
+          <Link to="/products" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-tertiary)', fontSize: 'var(--text-xs)', textDecoration: 'none', marginBottom: 8 }}>
             <ArrowLeft size={14} /> Back to Products
           </Link>
           <h1 className="admin-page-title">{isEdit ? 'Edit Product' : 'Add New Product'}</h1>

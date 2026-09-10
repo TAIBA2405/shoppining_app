@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { SlidersHorizontal, Grid3X3, List, ChevronDown, X } from 'lucide-react'
 import ProductCard from '../../components/ProductCard/ProductCard'
-import productsData from '../../data/products.json'
 import categoriesData from '../../data/categories.json'
+import { useAuth } from '../../context/AuthContext'
 import './CategoryPage.css'
 
 export default function CategoryPage() {
@@ -19,7 +19,13 @@ export default function CategoryPage() {
   const [selectedSizes, setSelectedSizes] = useState([])
   const [selectedColors, setSelectedColors] = useState([])
 
-  const allProducts = productsData.products
+  const { getProducts } = useAuth()
+  const [allProducts, setAllProducts] = useState([])
+
+  useEffect(() => {
+    getProducts().then(setAllProducts).catch(() => setAllProducts([]))
+  }, [getProducts])
+
   const category = categoriesData.categories.find(c => c.id === categoryId)
 
   const filteredProducts = useMemo(() => {

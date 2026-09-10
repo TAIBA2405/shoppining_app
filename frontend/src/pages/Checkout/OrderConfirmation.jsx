@@ -12,11 +12,13 @@ export default function OrderConfirmation() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getOrderById(orderId).then(data => {
-      setOrder(data)
-      setLoading(false)
-    })
-  }, [orderId])
+    getOrderById(orderId)
+      .then(data => {
+        setOrder(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [orderId, getOrderById])
 
   if (loading) {
     return (

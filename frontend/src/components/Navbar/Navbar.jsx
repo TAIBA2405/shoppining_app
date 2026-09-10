@@ -6,7 +6,7 @@ import { useWishlist } from '../../context/WishlistContext'
 import { useAuth } from '../../context/AuthContext'
 import { debounce } from '../../utils/helpers'
 import categoriesData from '../../data/categories.json'
-import productsData from '../../data/products.json'
+import { api } from '../../lib/api'
 import './Navbar.css'
 
 export default function Navbar() {
@@ -44,19 +44,25 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
-  const handleSearch = debounce((query) => {
+  const handleSearch = debounce(async (query) => {
     if (query.length < 2) {
       setSearchResults([])
       return
     }
-    const results = productsData.products.filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.category.toLowerCase().includes(query.toLowerCase()) ||
-      p.subcategory.toLowerCase().includes(query.toLowerCase()) ||
-      p.tags.some(t => t.toLowerCase().includes(query.toLowerCase()))
-    ).slice(0, 6)
-    setSearchResults(results)
-    setShowSearch(true)
+    try {
+      const products = await api.getProducts()
+      const q = query.toLowerCase()
+      const results = products.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        (p.subcategory || '').toLowerCase().includes(q) ||
+        (p.tags || []).some(t => t.toLowerCase().includes(q))
+      ).slice(0, 6)
+      setSearchResults(results)
+      setShowSearch(true)
+    } catch {
+      setSearchResults([])
+    }
   }, 200)
 
   const onSearchChange = (e) => {
