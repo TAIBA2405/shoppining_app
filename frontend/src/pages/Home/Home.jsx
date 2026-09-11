@@ -44,7 +44,7 @@ export default function Home() {
   const categories = categoriesData.categories
 
   useEffect(() => {
-    getProducts().then(setAllProducts).catch(() => setAllProducts([]))
+    getProducts().then(d => setAllProducts(d ?? [])).catch(() => setAllProducts([]))
   }, [getProducts])
 
   // Auto-slide hero
@@ -71,16 +71,18 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [])
 
+  const safeProducts = allProducts || []
   const featuredProducts = useMemo(() => {
-    if (activeTab === 'all') return allProducts.filter(p => p.isFeatured).slice(0, 8)
-    return allProducts.filter(p => p.category === activeTab && p.isFeatured).slice(0, 8)
+    if (activeTab === 'all') return safeProducts.filter(p => p.isFeatured).slice(0, 8)
+    return safeProducts.filter(p => p.category === activeTab && p.isFeatured).slice(0, 8)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, allProducts])
 
-  const newArrivals = allProducts.filter(p => p.isNew).slice(0, 4)
+  const newArrivals = safeProducts.filter(p => p.isNew).slice(0, 4)
   const categoryProductCounts = {
-    men: allProducts.filter(p => p.category === 'men').length,
-    women: allProducts.filter(p => p.category === 'women').length,
-    kids: allProducts.filter(p => p.category === 'kids').length
+    men: safeProducts.filter(p => p.category === 'men').length,
+    women: safeProducts.filter(p => p.category === 'women').length,
+    kids: safeProducts.filter(p => p.category === 'kids').length
   }
 
   const pad = (n) => String(n).padStart(2, '0')

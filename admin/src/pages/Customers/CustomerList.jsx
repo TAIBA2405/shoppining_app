@@ -17,21 +17,21 @@ export default function CustomerList() {
   useEffect(() => {
     Promise.all([getAllUsers(), getAllOrders()])
       .then(([u, o]) => {
-        setCustomers(u)
-        setOrders(o)
+        setCustomers(u ?? [])
+        setOrders(o ?? [])
       })
       .catch(() => {})
   }, [getAllUsers, getAllOrders])
 
   const refresh = () => {
     Promise.all([getAllUsers(), getAllOrders()]).then(([u, o]) => {
-      setCustomers(u)
-      setOrders(o)
+      setCustomers(u ?? [])
+      setOrders(o ?? [])
     })
   }
 
   const getCustomerOrders = (userId) =>
-    orders.filter(o => o.userId === userId)
+    (orders || []).filter(o => o.userId === userId)
 
   const getCustomerStats = (userId) => {
     const customerOrders = getCustomerOrders(userId)
@@ -52,7 +52,7 @@ export default function CustomerList() {
   }
 
   const filtered = useMemo(() => {
-    return customers.filter(c => {
+    return (customers || []).filter(c => {
       const q = search.toLowerCase()
       return !search ||
         c.name.toLowerCase().includes(q) ||
@@ -62,7 +62,8 @@ export default function CustomerList() {
   }, [customers, search])
 
   const totalRevenue = useMemo(() =>
-    customers.reduce((s, c) => s + getCustomerStats(c.id).revenue, 0),
+    (customers || []).reduce((s, c) => s + getCustomerStats(c.id).revenue, 0),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [customers, orders]
   )
 
@@ -73,7 +74,7 @@ export default function CustomerList() {
         <div>
           <h1 className="admin-page-title">Customers</h1>
           <p className="admin-page-subtitle">
-            {customers.length} registered users Â· {formatPrice(totalRevenue)} lifetime revenue
+            {(customers || []).length} registered users · {formatPrice(totalRevenue)} lifetime revenue
           </p>
         </div>
       </div>
@@ -81,8 +82,8 @@ export default function CustomerList() {
       {/* Summary cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 20 }}>
         {[
-          { label: 'Total Customers', value: customers.length, color: '#a78bfa', icon: Users },
-          { label: 'Active (has orders)', value: customers.filter(c => getCustomerStats(c.id).orderCount > 0).length, color: '#34d399', icon: ShoppingBag },
+          { label: 'Total Customers', value: (customers || []).length, color: '#a78bfa', icon: Users },
+          { label: 'Active (has orders)', value: (customers || []).filter(c => getCustomerStats(c.id).orderCount > 0).length, color: '#34d399', icon: ShoppingBag },
           { label: 'Lifetime Revenue', value: formatPrice(totalRevenue), color: '#c9a84c', icon: ShoppingBag },
         ].map(({ label, value, color, icon: Icon }) => (
           <div key={label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: '16px 20px', borderTopColor: color, borderTopWidth: 2 }}>
@@ -115,7 +116,7 @@ export default function CustomerList() {
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-tertiary)' }}>
             <Users size={40} style={{ marginBottom: 12, opacity: 0.4 }} />
-            <p>{customers.length === 0 ? 'No customers have registered yet' : 'No customers match your search'}</p>
+            <p>{(customers || []).length === 0 ? 'No customers have registered yet' : 'No customers match your search'}</p>
           </div>
         ) : (
           <div className="admin-table-wrapper">

@@ -17,13 +17,13 @@ export default function StockPage() {
   useEffect(() => {
     getProducts()
       .then(data => {
-        setProducts(data)
+        setProducts(data ?? [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
   }, [getProducts])
 
-  const refresh = () => getProducts().then(setProducts).catch(() => {})
+  const refresh = () => getProducts().then(d => setProducts(d ?? [])).catch(() => {})
 
   const handleToggle = async (product) => {
     setToggling(product.id)
@@ -38,13 +38,14 @@ export default function StockPage() {
     }
   }
 
-  const filtered = products.filter(p => {
+  const safeProducts = products || []
+  const filtered = safeProducts.filter(p => {
     const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase())
     return matchSearch && (!showOutOnly || !p.inStock)
   })
 
-  const outOfStockCount = products.filter(p => !p.inStock).length
-  const inStockCount = products.filter(p => p.inStock).length
+  const outOfStockCount = safeProducts.filter(p => !p.inStock).length
+  const inStockCount = safeProducts.filter(p => p.inStock).length
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'var(--text-tertiary)' }}>
@@ -79,7 +80,7 @@ export default function StockPage() {
         </div>
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: '16px 20px', borderTopColor: 'var(--color-primary)', borderTopWidth: 2 }}>
           <div style={{ fontSize: 10, color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Total</div>
-          <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: 'var(--color-primary)' }}>{products.length}</div>
+          <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: 'var(--color-primary)' }}>{safeProducts.length}</div>
         </div>
       </div>
 

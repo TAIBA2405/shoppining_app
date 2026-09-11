@@ -38,11 +38,11 @@ export default function OrderList() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const refresh = () => getAllOrders().then(setOrders).catch(() => {})
+  const refresh = () => getAllOrders().then(d => setOrders(d ?? [])).catch(() => {})
 
   useEffect(() => {
     getAllOrders()
-      .then(data => { setOrders(data); setLoading(false) })
+      .then(data => { setOrders(data ?? []); setLoading(false) })
       .catch(() => setLoading(false))
   }, [getAllOrders])
 
@@ -68,7 +68,7 @@ export default function OrderList() {
     refresh()
   }
 
-  const filtered = useMemo(() => orders.filter(o => {
+  const filtered = useMemo(() => (orders || []).filter(o => {
     const matchTab = tab === 'all' || o.status === tab
     const q = search.toLowerCase()
     const matchSearch = !search || o.id.toLowerCase().includes(q) ||
@@ -76,12 +76,13 @@ export default function OrderList() {
     return matchTab && matchSearch
   }), [orders, tab, search])
 
-  const totalRevenue = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
+  const safeOrders = orders || []
+  const totalRevenue = safeOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
   const tabCounts = useMemo(() => {
-    const c = { all: orders.length }
-    STATUSES.slice(1).forEach(s => { c[s] = orders.filter(o => o.status === s).length })
+    const c = { all: safeOrders.length }
+    STATUSES.slice(1).forEach(s => { c[s] = safeOrders.filter(o => o.status === s).length })
     return c
-  }, [orders])
+  }, [safeOrders])
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: 'var(--text-tertiary)' }}>

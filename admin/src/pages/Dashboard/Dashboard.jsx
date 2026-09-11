@@ -76,23 +76,26 @@ export default function Dashboard() {
   useEffect(() => {
     Promise.all([getAllOrders(), getProducts(), getAllUsers()])
       .then(([o, p, u]) => {
-        setOrders(o)
-        setProducts(p)
-        setUsers(u)
+        setOrders(o ?? [])
+        setProducts(p ?? [])
+        setUsers(u ?? [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
   }, [getAllOrders, getProducts, getAllUsers])
 
-  const totalRevenue = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
-  const pendingOrders = orders.filter(o => ['placed', 'confirmed'].includes(o.status)).length
-  const lowStock = products.filter(p => !p.inStock).length
+  const safeOrders = orders || []
+  const safeProducts = products || []
+  const safeUsers = users || []
+  const totalRevenue = safeOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0)
+  const pendingOrders = safeOrders.filter(o => ['placed', 'confirmed'].includes(o.status)).length
+  const lowStock = safeProducts.filter(p => !p.inStock).length
 
   const kpis = [
-    { label: 'Total Revenue', value: formatPrice(totalRevenue), icon: TrendingUp, color: '#34d399', sub: `${orders.filter(o => o.status !== 'cancelled').length} completed` },
-    { label: 'Total Orders', value: orders.length, icon: ShoppingBag, color: '#c9a84c', sub: `${pendingOrders} pending` },
-    { label: 'Products', value: products.length, icon: Package, color: '#60a5fa', sub: `${lowStock} out of stock` },
-    { label: 'Customers', value: users.length, icon: Users, color: '#a78bfa', sub: 'Registered users' },
+    { label: 'Total Revenue', value: formatPrice(totalRevenue), icon: TrendingUp, color: '#34d399', sub: `${safeOrders.filter(o => o.status !== 'cancelled').length} completed` },
+    { label: 'Total Orders', value: safeOrders.length, icon: ShoppingBag, color: '#c9a84c', sub: `${pendingOrders} pending` },
+    { label: 'Products', value: safeProducts.length, icon: Package, color: '#60a5fa', sub: `${lowStock} out of stock` },
+    { label: 'Customers', value: safeUsers.length, icon: Users, color: '#a78bfa', sub: 'Registered users' },
     { label: 'Low Stock', value: lowStock, icon: AlertTriangle, color: '#f87171', sub: 'Need restocking' },
     { label: 'Pending', value: pendingOrders, icon: Clock, color: '#fbbf24', sub: 'Awaiting action' },
   ]
@@ -104,24 +107,24 @@ export default function Dashboard() {
       d.setDate(d.getDate() - i)
       const label = d.toLocaleDateString('en-IN', { weekday: 'short' }).slice(0, 3)
       const dayStr = d.toDateString()
-      const count = orders.filter(o => new Date(o.createdAt).toDateString() === dayStr).length
+      const count = safeOrders.filter(o => new Date(o.createdAt).toDateString() === dayStr).length
       days.push({ label, value: count })
     }
     return days
-  }, [orders])
+  }, [safeOrders])
 
   const statusBreakdown = useMemo(() => {
     const counts = {}
-    orders.forEach(o => { counts[o.status] = (counts[o.status] || 0) + 1 })
+    safeOrders.forEach(o => { counts[o.status] = (counts[o.status] || 0) + 1 })
     return Object.entries(counts).map(([status, value]) => ({ label: status, value, color: STATUS_COLORS[status] || '#888' }))
-  }, [orders])
+  }, [safeOrders])
 
   const topProducts = useMemo(() => {
     const freq = {}
-    orders.forEach(o => { o.items?.forEach(item => { freq[item.id] = (freq[item.id] || 0) + (item.quantity || 1) }) })
+    safeOrders.forEach(o => { o.items?.forEach(item => { freq[item.id] = (freq[item.id] || 0) + (item.quantity || 1) }) })
     return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 5)
-      .map(([id, count]) => ({ product: products.find(p => p.id === id) || { name: id, price: 0, images: [] }, count }))
-  }, [orders, products])
+      .map(([id, count]) => ({ product: safeProducts.find(p => p.id === id) || { name: id, price: 0, images: [] }, count }))
+  }, [safeOrders, safeProducts])
 
   if (loading) {
     return (
@@ -168,7 +171,7 @@ export default function Dashboard() {
             <div className="admin-chart-title" style={{ marginBottom: 0 }}>Orders — Last 7 Days</div>
             <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-tertiary)' }}>Total: {chartData.reduce((s, d) => s + d.value, 0)}</div>
           </div>
-          {orders.length === 0
+          {safeOrders.length === 0
             ? <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>No orders yet</div>
             : <BarChart data={chartData} height={140} />}
         </motion.div>
@@ -223,7 +226,7 @@ export default function Dashboard() {
             <span className="admin-card-title">Recent Orders</span>
             <Link to="/orders" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-primary)', textDecoration: 'none' }}>View all &rarr;</Link>
           </div>
-          {orders.length === 0
+          {safeOrders.length === 0
             ? <div style={{ padding: '32px 20px', textAlign: 'center', color: 'var(--text-tertiary)', fontSize: 'var(--text-sm)' }}>No orders yet</div>
             : <div className="admin-table-wrapper">
                 <table className="admin-table">
@@ -233,7 +236,7 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.slice(0, 8).map(order => (
+                    {safeOrders.slice(0, 8).map(order => (
                       <tr key={order.id}>
                         <td style={{ fontWeight: 600, color: 'var(--color-primary)', fontSize: 'var(--text-xs)' }}>{order.id}</td>
                         <td style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)' }}>{order.userName || 'Guest'}</td>

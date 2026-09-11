@@ -23,13 +23,13 @@ export default function CategoryPage() {
   const [allProducts, setAllProducts] = useState([])
 
   useEffect(() => {
-    getProducts().then(setAllProducts).catch(() => setAllProducts([]))
+    getProducts().then(d => setAllProducts(d ?? [])).catch(() => setAllProducts([]))
   }, [getProducts])
 
   const category = categoriesData.categories.find(c => c.id === categoryId)
 
   const filteredProducts = useMemo(() => {
-    let products = [...allProducts]
+    let products = [...(allProducts || [])]
 
     // Category filter
     if (categoryId && categoryId !== 'all' && categoryId !== 'new') {
@@ -84,8 +84,8 @@ export default function CategoryPage() {
     return products
   }, [allProducts, categoryId, subFilter, searchQuery, sortBy, priceRange, selectedSizes, selectedColors])
 
-  const allSizes = [...new Set(allProducts.flatMap(p => p.sizes))].sort()
-  const allColors = [...new Set(allProducts.flatMap(p => p.colors.map(c => c.name)))]
+  const allSizes = [...new Set((allProducts || []).flatMap(p => p.sizes))].sort()
+  const allColors = [...new Set((allProducts || []).flatMap(p => p.colors.map(c => c.name)))]
 
   const toggleSize = (size) => {
     setSelectedSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size])

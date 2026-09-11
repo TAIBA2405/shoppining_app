@@ -28,10 +28,10 @@ export default function CouponList() {
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    getCoupons().then(setCoupons).catch(() => {})
+    getCoupons().then(d => setCoupons(d ?? [])).catch(() => {})
   }, [getCoupons])
 
-  const refresh = () => getCoupons().then(setCoupons).catch(() => {})
+  const refresh = () => getCoupons().then(d => setCoupons(d ?? [])).catch(() => {})
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }))
 
   const handleToggle = async (couponId, code) => {
@@ -68,7 +68,7 @@ export default function CouponList() {
 
   const handleAddCoupon = async () => {
     if (!validate()) return
-    const existing = coupons.find(c => c.code === form.code.toUpperCase().trim())
+    const existing = safeCoupons.find(c => c.code === form.code.toUpperCase().trim())
     if (existing) {
       setErrors({ code: 'Coupon code already exists' })
       return
@@ -93,8 +93,9 @@ export default function CouponList() {
     }
   }
 
-  const activeCoupons = coupons.filter(c => c.isActive).length
-  const expiredCoupons = coupons.filter(c => c.validTill && new Date(c.validTill) < new Date()).length
+  const safeCoupons = coupons || []
+  const activeCoupons = safeCoupons.filter(c => c.isActive).length
+  const expiredCoupons = safeCoupons.filter(c => c.validTill && new Date(c.validTill) < new Date()).length
 
   const formatDiscount = (coupon) => {
     if (coupon.discountType === 'percentage') return `${coupon.discountValue}% off`
@@ -108,7 +109,7 @@ export default function CouponList() {
       <div className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Coupons</h1>
-          <p className="admin-page-subtitle">{coupons.length} coupons Â· {activeCoupons} active</p>
+          <p className="admin-page-subtitle">{safeCoupons.length} coupons · {activeCoupons} active</p>
         </div>
         <button
           className="btn btn-primary btn-sm"
@@ -122,9 +123,9 @@ export default function CouponList() {
       {/* Summary */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 20 }}>
         {[
-          { label: 'Total Coupons', value: coupons.length, color: '#c9a84c' },
+          { label: 'Total Coupons', value: safeCoupons.length, color: '#c9a84c' },
           { label: 'Active', value: activeCoupons, color: '#34d399' },
-          { label: 'Inactive', value: coupons.length - activeCoupons, color: '#6b6b7b' },
+          { label: 'Inactive', value: safeCoupons.length - activeCoupons, color: '#6b6b7b' },
           { label: 'Expired', value: expiredCoupons, color: '#f87171' },
         ].map(({ label, value, color }) => (
           <div key={label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-xl)', padding: '16px 20px', borderTopColor: color, borderTopWidth: 2 }}>
@@ -135,7 +136,7 @@ export default function CouponList() {
       </div>
 
       {/* Coupons Grid */}
-      {coupons.length === 0 ? (
+      {safeCoupons.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-tertiary)', background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-color)' }}>
           <Tag size={40} style={{ marginBottom: 12, opacity: 0.4 }} />
           <p style={{ marginBottom: 16 }}>No coupons yet. Create your first coupon!</p>
@@ -146,7 +147,7 @@ export default function CouponList() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
           <AnimatePresence>
-            {coupons.map((coupon, i) => {
+            {safeCoupons.map((coupon, i) => {
               const isExpired = coupon.validTill && new Date(coupon.validTill) < new Date()
               return (
                 <motion.div

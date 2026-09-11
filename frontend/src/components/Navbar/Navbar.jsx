@@ -50,7 +50,7 @@ export default function Navbar() {
       return
     }
     try {
-      const products = await api.getProducts()
+      const products = (await api.getProducts()) ?? []
       const q = query.toLowerCase()
       const results = products.filter(p =>
         p.name.toLowerCase().includes(q) ||

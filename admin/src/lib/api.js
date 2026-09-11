@@ -35,11 +35,16 @@ async function req(path, { method = 'GET', body, auth = true } = {}) {
     throw new Error('Cannot reach the API. Is the backend running?')
   }
   let data = null
-  try { data = await res.json() } catch { /* empty body */ }
+  try { data = await res.json() } catch { /* empty body (e.g. index.html fallback) */ }
   if (!res.ok) {
     const err = new Error(data?.error || `Request failed (${res.status})`)
     err.status = res.status
     throw err
+  }
+  if (data === null || data === undefined) {
+    // Static host served HTML instead of JSON (wrong VITE_API_URL) —
+    // throw so callers keep their [] default instead of setting null.
+    throw new Error('Cannot reach the API. Is the backend running?')
   }
   return data
 }

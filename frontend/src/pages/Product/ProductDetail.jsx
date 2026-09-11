@@ -18,12 +18,12 @@ export default function ProductDetail() {
 
   useEffect(() => {
     getProducts()
-      .then(setCatalog)
+      .then(d => setCatalog(d ?? []))
       .catch(() => setCatalog([]))
       .finally(() => setLoadingCatalog(false))
   }, [getProducts])
 
-  const product = catalog.find(p => p.id === productId)
+  const product = (catalog || []).find(p => p.id === productId)
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedSize, setSelectedSize] = useState('')
   const [selectedColor, setSelectedColor] = useState('')
@@ -35,7 +35,7 @@ export default function ProductDetail() {
 
   const relatedProducts = useMemo(() => {
     if (!product) return []
-    return catalog
+    return (catalog || [])
       .filter(p => p.category === product.category && p.id !== product.id)
       .slice(0, 4)
   }, [product, catalog])

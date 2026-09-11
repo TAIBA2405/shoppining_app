@@ -21,17 +21,18 @@ export default function ProductList() {
   useEffect(() => {
     getProducts()
       .then(data => {
-        setProducts(data)
+        setProducts(data ?? [])
         setLoading(false)
       })
       .catch(() => setLoading(false))
   }, [getProducts])
 
-  const refresh = () => getProducts().then(setProducts)
+  const refresh = () => getProducts().then(d => setProducts(d ?? [])).catch(() => {})
 
-  const categories = ['all', ...new Set(products.map(p => p.category))]
+  const safeProducts = products || []
+  const categories = ['all', ...new Set(safeProducts.map(p => p.category))]
 
-  const filtered = products.filter(p => {
+  const filtered = safeProducts.filter(p => {
     const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.id.toLowerCase().includes(search.toLowerCase())
     const matchCat = categoryFilter === 'all' || p.category === categoryFilter
     const matchStock = stockFilter === 'all' || (stockFilter === 'in' && p.inStock) || (stockFilter === 'out' && !p.inStock)
@@ -62,7 +63,7 @@ export default function ProductList() {
       <div className="admin-page-header">
         <div>
           <h1 className="admin-page-title">Products</h1>
-          <p className="admin-page-subtitle">{products.length} total &middot; {products.filter(p => !p.inStock).length} out of stock</p>
+          <p className="admin-page-subtitle">{safeProducts.length} total &middot; {safeProducts.filter(p => !p.inStock).length} out of stock</p>
         </div>
         <div className="admin-page-header-actions">
           <Link to="/products/new" className="btn btn-primary btn-sm">
