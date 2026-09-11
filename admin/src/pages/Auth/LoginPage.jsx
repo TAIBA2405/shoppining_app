@@ -9,7 +9,7 @@ export default function AdminLogin() {
   const { login } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: 'admin@styleverse.com', password: 'admin123' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -39,11 +39,6 @@ export default function AdminLogin() {
           </div>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: 'var(--text-2xl)', fontWeight: 800, marginBottom: 4 }}>Admin Login</h1>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-tertiary)' }}>StyleVerse Admin Panel</p>
-        </div>
-
-        <div style={{ padding: '10px 14px', borderRadius: 'var(--radius-lg)', background: 'rgba(var(--color-primary-rgb), 0.08)', border: '1px solid rgba(var(--color-primary-rgb), 0.15)', marginBottom: 20, fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-          <strong style={{ color: 'var(--color-primary)' }}>Credentials pre-filled.</strong><br />
-          Email: admin@styleverse.com &middot; Password: admin123
         </div>
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
